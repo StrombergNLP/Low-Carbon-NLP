@@ -1,1 +1,2 @@
-.vscode/
+.vscode/*
+src/model/__pycache__/*
