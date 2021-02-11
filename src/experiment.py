@@ -2,8 +2,10 @@ import os
 import json
 
 from transformers import Trainer, TrainingArguments
+from transformers import RobertaTokenizerFast
+from transformers import DataCollatorForLanguageModeling, LineByLineTextDataset
 from datasets import load_dataset
-from model.model import Model
+from model.RoBERTaModel import RoBERTaModel
 
 
 def main():
@@ -12,16 +14,19 @@ def main():
     with open(path + '/config.json') as json_file:
         config = json.load(json_file)
 
-        model = Model(config['model_name'])
+        dataset = load_dataset(config['dataset'], script_version='master')
+        dataset_train = dataset['train']
 
-        data = load_dataset(config['dataset'], script_version='master')
-        print(data)
+        tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
+        data_collator = DataCollatorForLanguageModeling(
+            tokenizer=tokenizer, mlm=True, mlm_probability=0.15
+        )
+        model = RoBERTaModel(config['model_parameters'][0])
 
-        epochs = config['train_epochs']
 
         training_args = TrainingArguments(
             output_dir='./results',
-            num_train_epochs=epochs,
+            num_train_epochs=config['train_epochs'],
             per_device_train_batch_size=128,
             per_device_eval_batch_size=128,
             warmup_steps=500,
@@ -30,12 +35,13 @@ def main():
         )
 
         trainer = Trainer(
-            model=model,
+            model=model.model,
             args=training_args,
-            train_dataset=data
+            train_dataset=dataset_train,
+            data_collator=data_collator
         )
 
-        # trainer.train()
+        trainer.train()
 
 
 
