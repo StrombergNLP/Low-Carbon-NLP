@@ -18,15 +18,17 @@ def main():
         dataset = load_dataset(config['dataset'], script_version='master')
         dataset_train = dataset['train']
         tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
-        # dataset_train.map(lambda example: tokenizer.encode(example['text'], truncation=True, padding=True), batched=True)
+
+        dataset_reduced = dataset_train['text'][:128]
 
         inputs = tokenizer.batch_encode_plus(
-            dataset_train['text'], truncation=True, padding=True
+            dataset_reduced, truncation=True, padding=True, verbose=True
         )
 
         data_collator = DataCollatorForLanguageModeling(
             tokenizer=tokenizer, mlm=True, mlm_probability=0.15
         )
+
         model = RoBERTaModel(config['model_parameters'][0])
 
 
@@ -43,7 +45,7 @@ def main():
         trainer = Trainer(
             model=model.model,
             args=training_args,
-            train_dataset=inputs,
+            train_dataset=inputs['input_ids'],
             data_collator=data_collator
         )
 
