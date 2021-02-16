@@ -6,12 +6,11 @@ class CarbonTrackerCallback(TrainerCallback):
         super().__init__()
         self.tracker = CarbonTracker(epochs=max_epochs)
 
-    
     def on_epoch_begin(self):
         self.tracker.epoch_start()
-
 
     def on_epoch_end(self):
         self.tracker.epoch_end()
 
-        
+    def on_train_end(self):
+        self.tracker.stop()
