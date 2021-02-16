@@ -6,7 +6,7 @@ from transformers import RobertaTokenizerFast
 from transformers import DataCollatorForLanguageModeling, LineByLineTextDataset
 from datasets import load_dataset
 from model.RoBERTaModel import RoBERTaModel
-
+from callbacks.CarbonTrackerCallback import CarbonTrackerCallback
 
 
 def main():
@@ -31,10 +31,11 @@ def main():
 
         model = RoBERTaModel(config['model_parameters'][0])
 
+        epochs = config['train_epochs']
 
         training_args = TrainingArguments(
             output_dir='./results',
-            num_train_epochs=config['train_epochs'],
+            num_train_epochs=epochs,
             per_device_train_batch_size=128,
             per_device_eval_batch_size=128,
             warmup_steps=500,
@@ -46,7 +47,8 @@ def main():
             model=model.model,
             args=training_args,
             train_dataset=inputs['input_ids'],
-            data_collator=data_collator
+            data_collator=data_collator,
+            callbacks=[CarbonTrackerCallback(epochs)]
         )
 
         trainer.train()
