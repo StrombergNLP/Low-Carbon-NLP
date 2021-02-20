@@ -1,8 +1,8 @@
 {
     "model_name": "roberta-base",
-    "dataset": "cc_news",
+    "dataset": "sofc_materials_articles",
     "train_epochs": 1,
-    "batch_size": 128,
+    "batch_size": 1,
 
     "model_parameters": [{
         "vocab_size": 52000,
