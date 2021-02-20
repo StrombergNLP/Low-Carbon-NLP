@@ -32,12 +32,13 @@ def main():
         model = RoBERTaModel(config['model_parameters'][0])
 
         epochs = config['train_epochs']
+        batch_size = config['batch_size']
 
         training_args = TrainingArguments(
             output_dir='./results',
             num_train_epochs=epochs,
-            per_device_train_batch_size=128,
-            per_device_eval_batch_size=128,
+            per_device_train_batch_size=batch_size,
+            per_device_eval_batch_size=batch_size,
             warmup_steps=500,
             weight_decay=0.01,
             logging_dir='./logs'
