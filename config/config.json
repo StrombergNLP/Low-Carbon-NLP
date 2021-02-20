@@ -2,7 +2,7 @@
     "model_name": "roberta-base",
     "dataset": "sofc_materials_articles",
     "train_epochs": 1,
-    "batch_size": 1,
+    "batch_size": 128,
 
     "model_parameters": [{
         "vocab_size": 52000,
