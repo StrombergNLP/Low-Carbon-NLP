@@ -1,4 +1,4 @@
-from transformers import TrainerCallback
+from transformers import TrainerCallback, Trainer, TrainingArguments, TrainerState, TrainerControl
 from carbontracker.tracker import CarbonTracker
 
 class CarbonTrackerCallback(TrainerCallback):
