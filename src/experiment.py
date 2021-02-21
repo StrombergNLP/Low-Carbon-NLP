@@ -35,6 +35,7 @@ def main():
 
         opt_param = config['optimizer_parameters']
         optimizer = AdamW(lr=opt_param['lr'], betas=(opt_param['beta_one'], opt_param['beta_two']), eps=opt_param['eps'], weight_decay=opt_param['weight_decay'])
+        scheduler = None
 
         training_args = TrainingArguments(
             output_dir='./results',
@@ -52,6 +53,7 @@ def main():
             train_dataset=inputs['input_ids'],
             data_collator=data_collator,
             callbacks=[CarbonTrackerCallback(epochs)]
+            optimizers=(optimizer, scheduler)
         )
 
         trainer.train()
