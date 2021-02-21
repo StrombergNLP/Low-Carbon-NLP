@@ -2,10 +2,10 @@
     "model_name": "roberta-base",
     "dataset": "sofc_materials_articles",
     "train_epochs": 1,
-    "batch_size": 128,
+    "batch_size": 8000,
 
     "model_parameters": [{
-        "vocab_size": 52000,
+        "vocab_size": 30522,
         "hidden_size": 768,
         "num_hidden_layers": 6,
         "num_attention_heads": 12,
@@ -20,6 +20,15 @@
         "gradient_checkpointing": false,
         "position_embedding_type": "absolute",
         "use_cache": true
+    }],
+
+    "optimizer_parameters": [{
+        "lr": 6e-4,
+        "beta_one": 0.9,
+        "beta_two": 0.999,
+        "eps": 1e-6,
+        "warmup_steps": 24000,
+        "weight_decay": 0.01
     }]
 }
 
