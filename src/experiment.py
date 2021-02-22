@@ -33,6 +33,7 @@ def main():
             tokenizer=tokenizer, mlm=True, mlm_probability=0.15
         )
 
+
         model = RoBERTaModel(config['model_parameters'][0])
 
 
@@ -59,9 +60,9 @@ def main():
             optimizers=(optimizer, scheduler)
         )
 
-        trainer.train()
+        # trainer.train()
 
-        trainer.save_model('trained_model.json')
+        # trainer.save_model('trained_model.json')
 
 
 
