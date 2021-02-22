@@ -35,7 +35,7 @@ def main():
 
 
         model = RoBERTaModel(config['model_parameters'][0])
-
+        model.resize_token_embeddings(len(tokenizer))
 
         opt_param = config['optimizer_parameters'][0]
         optimizer = AdamW(params=model.parameters(), lr=opt_param['lr'], betas=(opt_param['beta_one'], opt_param['beta_two']), eps=opt_param['eps'], weight_decay=opt_param['weight_decay'])

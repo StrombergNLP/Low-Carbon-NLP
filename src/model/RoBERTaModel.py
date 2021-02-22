@@ -26,7 +26,7 @@ class RoBERTaModel(nn.Module):
             hidden_act=model_parameters['hidden_act'],
             hidden_dropout_prob=model_parameters['hidden_dropout_prob'],
             attention_probs_dropout_prog=model_parameters['attention_probs_dropout_prog'],
-            max_position_embeddings=model_parameters['max_position_embeddings'],
+            max_position_embeddings=model_parameters['max_position_embeddings'] * 2,
             type_vocab_size=model_parameters['type_vocab_size'],
             initializer_range=model_parameters['initializer_range'],
             layer_norm_eps=model_parameters['layer_norm_eps'],
