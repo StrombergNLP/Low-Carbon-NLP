@@ -36,8 +36,8 @@ def main():
         model = RoBERTaModel(config['model_parameters'][0])
 
 
-        opt_param = config['optimizer_parameters']
-        optimizer = AdamW(lr=opt_param['lr'], betas=(opt_param['beta_one'], opt_param['beta_two']), eps=opt_param['eps'], weight_decay=opt_param['weight_decay'])
+        opt_param = config['optimizer_parameters'][0]
+        optimizer = AdamW(params=model.parameters(), lr=opt_param['lr'], betas=(opt_param['beta_one'], opt_param['beta_two']), eps=opt_param['eps'], weight_decay=opt_param['weight_decay'])
         scheduler = None
 
         training_args = TrainingArguments(
@@ -46,7 +46,7 @@ def main():
             per_device_train_batch_size=config['batch_size'],
             per_device_eval_batch_size=config['batch_size'],
             warmup_steps=opt_param['warmup_steps'],
-            weight_decay=opt_params['weight_decay'],
+            weight_decay=opt_param['weight_decay'],
             logging_dir='./logs'
         )
 
@@ -59,9 +59,9 @@ def main():
             optimizers=(optimizer, scheduler)
         )
 
-        trainer.train()
+        # trainer.train()
 
-        trainer.save_model('trained_model.json')
+        # trainer.save_model('trained_model.json')
 
 
 
