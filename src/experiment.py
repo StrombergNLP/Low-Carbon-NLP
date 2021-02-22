@@ -9,6 +9,7 @@ from transformers import AdamW
 from datasets import load_dataset
 from model.RoBERTaModel import RoBERTaModel
 from callbacks.CarbonTrackerCallback import CarbonTrackerCallback
+from callbacks import PerplexityCallback
 
 
 def main():
