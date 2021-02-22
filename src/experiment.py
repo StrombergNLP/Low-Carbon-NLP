@@ -27,10 +27,10 @@ def main():
 
         dataset_reduced = dataset_train['text']
         inputs = tokenizer.batch_encode_plus(
-            dataset_reduced, truncation=True, padding=True, verbose=True
+            dataset_reduced, truncation=True, padding=True, verbose=True, max_length=config['model_parameters'][0]['max_position_embeddings']
         )
         data_collator = DataCollatorForLanguageModeling(
-            tokenizer=tokenizer, mlm=True, mlm_probability=0.15, max_length=config['model_parameters'][0]['max_position_embeddings']
+            tokenizer=tokenizer, mlm=True, mlm_probability=0.15
         )
 
         model = RoBERTaModel(config['model_parameters'][0])
