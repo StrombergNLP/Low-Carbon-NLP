@@ -2,7 +2,7 @@
     "model_name": "roberta-base",
     "dataset": "sofc_materials_articles",
     "train_epochs": 1,
-    "batch_size": 8000,
+    "batch_size": 64,
 
     "model_parameters": [{
         "vocab_size": 30522,
@@ -13,7 +13,7 @@
         "hidden_act": "gelu",
         "hidden_dropout_prob": 0.1,
         "attention_probs_dropout_prog": 0.1,
-        "max_position_embeddings": 205865,
+        "max_position_embeddings": 512,
         "type_vocab_size": 1,
         "initializer_range": 0.02,
         "layer_norm_eps": 1e-12,

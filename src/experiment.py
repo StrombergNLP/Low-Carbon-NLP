@@ -30,7 +30,7 @@ def main():
             dataset_reduced, truncation=True, padding=True, verbose=True
         )
         data_collator = DataCollatorForLanguageModeling(
-            tokenizer=tokenizer, mlm=True, mlm_probability=0.15
+            tokenizer=tokenizer, mlm=True, mlm_probability=0.15, max_length=config['model_parameters'][0]['max_position_embeddings']
         )
 
         model = RoBERTaModel(config['model_parameters'][0])
