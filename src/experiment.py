@@ -1,5 +1,6 @@
 import os
 import json
+import transformers
 
 from transformers import Trainer, TrainingArguments
 from transformers import RobertaTokenizerFast
@@ -11,6 +12,7 @@ from callbacks.CarbonTrackerCallback import CarbonTrackerCallback
 
 
 def main():
+    transformers.logging.set_verbosity_info()
     path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'config'))
 
     with open(path + '/config.json') as json_file:
@@ -57,6 +59,8 @@ def main():
         )
 
         trainer.train()
+
+        trainer.save_model('trained_model.json')
 
 
 
