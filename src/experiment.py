@@ -1,6 +1,7 @@
 import os
 import json
 import transformers
+import torch
 
 from transformers import Trainer, TrainingArguments
 from transformers import RobertaTokenizerFast
@@ -13,6 +14,7 @@ from callbacks.PerplexityCallback import PerplexityCallback
 
 
 def main():
+    torch.cuda.device(1)
     transformers.logging.set_verbosity_info()
     path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'config'))
 
