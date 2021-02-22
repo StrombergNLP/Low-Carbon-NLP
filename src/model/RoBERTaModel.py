@@ -1,6 +1,6 @@
 from torch import nn
 from transformers import RobertaConfig
-from transformers import RobertaForCausalLM
+from transformers import RobertaForMaskedLM
 
 class RoBERTaModel(nn.Module):
     """
@@ -37,7 +37,7 @@ class RoBERTaModel(nn.Module):
             output_logits=output_logits,
             output_attentions=output_attentions
         )
-        self.model = RobertaForCausalLM(config=self.config)
+        self.model = RobertaForMaskedLM(config=self.config)
 
         # self.tune()
 

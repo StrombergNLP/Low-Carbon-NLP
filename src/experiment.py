@@ -24,7 +24,7 @@ def main():
         dataset = load_dataset(config['dataset'], script_version='master')
         tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
 
-        dataset_reduced = dataset_train['train']['text']
+        dataset_reduced = dataset['train']['text']
         del dataset
         inputs = tokenizer.batch_encode_plus(
             dataset_reduced, truncation=True, padding=True, verbose=True, max_length=config['model_parameters'][0]['max_position_embeddings']
