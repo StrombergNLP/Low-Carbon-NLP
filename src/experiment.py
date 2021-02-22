@@ -25,7 +25,7 @@ def main():
         dataset_train = dataset['train']
         tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
 
-        dataset_reduced = dataset_train['text'][:128]
+        dataset_reduced = dataset_train['text']
         inputs = tokenizer.batch_encode_plus(
             dataset_reduced, truncation=True, padding=True, verbose=True
         )
@@ -55,7 +55,7 @@ def main():
             args=training_args,
             train_dataset=inputs['input_ids'],
             data_collator=data_collator,
-            callbacks=[CarbonTrackerCallback(epochs)],
+            callbacks=[CarbonTrackerCallback(epochs), PerplexityCallback()],
             optimizers=(optimizer, scheduler)
         )
 
