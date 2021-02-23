@@ -3,6 +3,7 @@ import json
 import transformers
 import torch
 
+from transformers import EvalPrediction
 from transformers import Trainer, TrainingArguments
 from transformers import RobertaTokenizerFast
 from transformers import DataCollatorForLanguageModeling, LineByLineTextDataset
@@ -58,6 +59,7 @@ def main():
             args=training_args,
             train_dataset=inputs['input_ids'],
             data_collator=data_collator,
+            compute_metrics=compute_metrics,
             callbacks=[CarbonTrackerCallback(epochs), PerplexityCallback()],
             optimizers=(optimizer, scheduler)
         )
@@ -70,4 +72,14 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+def compute_metrics(eval_prediction: EvalPrediction):
+    # Computes the perplexity
+    loss = torch.nn.CrossEntropyLoss()(eval_prediction[0], eval_prediction[1])
+    metrics = {
+        'loss': loss,
+        'perplexity': 2**loss
+    }
+    return metrics
 
