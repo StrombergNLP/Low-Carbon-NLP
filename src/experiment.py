@@ -65,6 +65,7 @@ def main():
         )
 
         trainer.train()
+        trainer.evaluate()
 
         trainer.save_model('trained_model.json')
 
