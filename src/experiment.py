@@ -58,6 +58,7 @@ def main():
             model=model.model,
             args=training_args,
             train_dataset=inputs['input_ids'],
+            eval_dataset=inputs['input_ids'],
             data_collator=data_collator,
             compute_metrics=compute_metrics,
             callbacks=[CarbonTrackerCallback(epochs), PerplexityCallback()],
