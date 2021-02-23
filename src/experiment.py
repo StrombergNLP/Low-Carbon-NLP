@@ -69,11 +69,6 @@ def main():
         trainer.save_model('trained_model.json')
 
 
-
-if __name__ == '__main__':
-    main()
-
-
 def compute_metrics(eval_prediction: EvalPrediction):
     # Computes the perplexity
     loss = torch.nn.CrossEntropyLoss()(eval_prediction[0], eval_prediction[1])
@@ -82,4 +77,8 @@ def compute_metrics(eval_prediction: EvalPrediction):
         'perplexity': 2**loss
     }
     return metrics
+
+
+if __name__ == '__main__':
+    main()
 
