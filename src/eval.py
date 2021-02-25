@@ -37,7 +37,8 @@ def main():
         output_dir='./results',
         num_train_epochs=epochs,
         per_device_eval_batch_size=1,
-        logging_dir='./logs'
+        logging_dir='./logs',
+        eval_accumulation_steps=10
     )
 
     trainer = Trainer(
