@@ -55,11 +55,13 @@ def main():
         trainer.evaluate()
 
 
-def compute_metrics(pred):
-    # Computes the perplexity
-    print(pred[0][0])
-    print(pred[1][0])
-    return {}
+def compute_metrics(logits, labels, weights, label_smoothing=0.0):
+    """Compute summary metrics."""
+    loss, normalizer = cross_entropy(logits, labels, weights, label_smoothing)
+    acc, _ = accuracy(logits, labels, weights)
+    metrics = {"loss": loss, "accuracy": acc, "normalizer": normalizer}
+    metrics = jax.lax.psum(metrics, axis_name="batch")
+    return metrics
 
 
 if __name__ == '__main__':
