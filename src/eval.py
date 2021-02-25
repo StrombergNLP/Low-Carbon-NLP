@@ -34,9 +34,7 @@ def main():
     training_args = TrainingArguments(
         output_dir='./results',
         num_train_epochs=epochs,
-        per_device_eval_batch_size=config['batch_size'],
-        warmup_steps=opt_param['warmup_steps'],
-        weight_decay=opt_param['weight_decay'],
+        per_device_eval_batch_size=1,
         logging_dir='./logs'
     )
 
