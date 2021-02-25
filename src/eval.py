@@ -55,12 +55,10 @@ def main():
         trainer.evaluate()
 
 
-def compute_metrics(eval_prediction: EvalPrediction):
+def compute_metrics(pred):
     # Computes the perplexity
-    labels = eval_prediction.label_ids
-    preds = pred.predictions.argmax(-1)
-    print('Labels: {}'.format(labels))
-    print('Preds: {}'.format(preds))
+    print(pred[0][0])
+    print(pred[1][0])
     return {}
 
 
