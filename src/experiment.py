@@ -6,7 +6,7 @@ import torch
 from transformers import EvalPrediction
 from transformers import Trainer, TrainingArguments
 from transformers import RobertaTokenizerFast
-from transformers import DataCollatorForLanguageModeling, LineByLineTextDataset
+from transformers import DataCollatorForLanguageModeling
 from transformers import AdamW
 from datasets import load_dataset
 from model.RoBERTaModel import RoBERTaModel
@@ -68,7 +68,7 @@ def main():
         trainer.train()
         trainer.evaluate()
 
-        trainer.save_model('trained_model.json')
+        trainer.save_model('trained_model')
 
 
 def compute_metrics(eval_prediction: EvalPrediction):
