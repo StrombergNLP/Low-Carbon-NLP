@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#SBATCH --job-name=datadownload        # Job name
+#SBATCH --output=job.%j.out     	 # Name of output file (%j expands to jobId)
+#SBATCH --cpus-per-task=1         	 # Schedule one core
+#SBATCH --time=04:00:00          	 # Run time (hh:mm:ss) - run for one hour max
+#SBATCH --partition=brown   	 	 # Run on only red queue
+
+# Print out the hostname of the node the job is running on
+pip3 install --user transformers datasets carbontracker
+pip3 install --user torch torchvision
+python3 Low-Carbon-NLP/src/experiment.py
