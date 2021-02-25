@@ -54,70 +54,14 @@ def main():
     )
 
     with torch.no_grad():
-        trainer.evaluate()
+        eval_output = trainer.evaluate()
+        perplexity = math.exp(eval_output["eval_loss"])
+        print(perplexity)
+    
 
 
-def compute_metrics(logits, labels, weights, label_smoothing=0.0):
-    """Compute summary metrics."""
-    loss, normalizer = cross_entropy(logits, labels, weights, label_smoothing)
-    acc, _ = accuracy(logits, labels, weights)
-    metrics = {"loss": loss, "accuracy": acc, "normalizer": normalizer}
-    return metrics
 
 
-def accuracy(logits, targets, weights=None):
-    """Compute weighted accuracy for log probs and targets.
-    Args:
-     logits: [batch, length, num_classes] float array.
-     targets: categorical targets [batch, length] int array.
-     weights: None or array of shape [batch, length]
-    Returns:
-      Tuple of scalar loss and batch normalizing factor.
-    """
-    if logits.ndim != targets.ndim + 1:
-        raise ValueError(
-            "Incorrect shapes. Got shape %s logits and %s targets" % (str(logits.shape), str(targets.shape))
-        )
-
-    loss = jnp.equal(jnp.argmax(logits, axis=-1), targets)
-    loss *= weights
-
-    return loss.sum(), weights.sum()
-
-
-def cross_entropy(logits, targets, weights=None, label_smoothing=0.0):
-    """Compute cross entropy and entropy for log probs and targets.
-    Args:
-     logits: [batch, length, num_classes] float array.
-     targets: categorical targets [batch, length] int array.
-     weights: None or array of shape [batch, length]
-     label_smoothing: label smoothing constant, used to determine the on and off values.
-    Returns:
-      Tuple of scalar loss and batch normalizing factor.
-    """
-    if logits.ndim != targets.ndim + 1:
-        raise ValueError(
-            "Incorrect shapes. Got shape %s logits and %s targets" % (str(logits.shape), str(targets.shape))
-        )
-
-    vocab_size = logits.shape[-1]
-    confidence = 1.0 - label_smoothing
-    low_confidence = (1.0 - confidence) / (vocab_size - 1)
-    normalizing_constant = -(
-        confidence * jnp.log(confidence) + (vocab_size - 1) * low_confidence * jnp.log(low_confidence + 1e-20)
-    )
-    soft_targets = common_utils.onehot(targets, vocab_size, on_value=confidence, off_value=low_confidence)
-
-    loss = -jnp.sum(soft_targets * log_softmax(logits), axis=-1)
-    loss = loss - normalizing_constant
-
-    if weights is not None:
-        loss = loss * weights
-        normalizing_factor = weights.sum()
-    else:
-        normalizing_factor = np.prod(targets.shape)
-
-    return loss.sum(), normalizing_factor
 
 
 if __name__ == '__main__':
