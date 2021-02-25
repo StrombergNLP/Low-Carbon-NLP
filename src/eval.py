@@ -13,7 +13,7 @@ from callbacks.CarbonTrackerCallback import CarbonTrackerCallback
 
 
 def main():
-    dataset = load_dataset(config['dataset'], script_version='master')
+    dataset = load_dataset('cc_news', script_version='master')
     tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
     dataset_reduced = dataset['train']['text'][:2000]
     del dataset
