@@ -1,8 +1,7 @@
 import os
+import math
 import torch
 import transformers
-import jax
-import jax.numpy as jnp
 
 from datasets import load_dataset
 from transformers import EvalPrediction
