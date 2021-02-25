@@ -14,6 +14,7 @@ from callbacks.CarbonTrackerCallback import CarbonTrackerCallback
 
 
 def main():
+    epochs = 1
     dataset = load_dataset('cc_news', script_version='master')
     tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
     dataset_reduced = dataset['train']['text'][:2000]
@@ -49,17 +50,17 @@ def main():
         callbacks=[CarbonTrackerCallback(epochs), PerplexityCallback()],
     )
 
-    trainer.evaluate()
+    with torch.no_grad():
+        trainer.evaluate()
 
 
 def compute_metrics(eval_prediction: EvalPrediction):
     # Computes the perplexity
-    loss = torch.nn.CrossEntropyLoss()(eval_prediction[0], eval_prediction[1])
-    metrics = {
-        'loss': loss,
-        'perplexity': 2**loss
-    }
-    return metrics
+    labels = eval_prediction.label_ids
+    preds = pred.predictions.argmax(-1)
+    print('Labels: {}'.format(labels))
+    print('Preds: {}'.format(preds))
+    return {}
 
 
 if __name__ == '__main__':
