@@ -3,6 +3,7 @@ import torch
 import transformers
 
 from datasets import load_dataset
+from transformers import EvalPrediction
 from transformers import RobertaTokenizerFast
 from transformers import Trainer, TrainingArguments
 from transformers import DataCollatorForLanguageModeling
