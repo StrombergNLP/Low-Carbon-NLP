@@ -19,7 +19,7 @@ def main():
     del dataset
 
     inputs = tokenizer.batch_encode_plus(
-        dataset_reduced, truncation=True, padding=True, verbose=True, max_length=config['model_parameters'][0]['max_position_embeddings']
+        dataset_reduced, truncation=True, padding=True, verbose=True, max_length=512
     )
     data_collator = DataCollatorForLanguageModeling(
         tokenizer=tokenizer, mlm=True, mlm_probability=0.15
