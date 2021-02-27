@@ -1,0 +1,13 @@
+#!/bin/bash
+
+#SBATCH --job-name=roberta_base       # Job name
+#SBATCH --output=roberta_base_eval       # Name of output file (%j expands to jobId)
+#SBATCH --cpus-per-task=8       # Schedule one core
+#SBATCH --mem=128G
+#SBATCH --gres=gpu:2             # Schedule a GPU
+#SBATCH --time=3-00:00:00          # Run time (hh:mm:ss) - run for one hour max
+#SBATCH --partition=red		 # Run on either the Red or Brown queue
+
+pip3 install --user datasets transformers carbontracker deepspeed
+pip3 install --user torch torchvision
+deepspeed --num_gpus=2 src/eval.py --deepspeed ds_config.json

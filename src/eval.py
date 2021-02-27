@@ -18,7 +18,7 @@ def main():
     epochs = 1
     dataset = load_dataset('cc_news', script_version='master')
     tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
-    dataset_reduced = dataset['train']['text'][:10]
+    dataset_reduced = dataset['train']['text'][:200]
     del dataset
 
     inputs = tokenizer.batch_encode_plus(
@@ -48,7 +48,6 @@ def main():
         train_dataset=inputs['input_ids'],
         eval_dataset=inputs['input_ids'],
         data_collator=data_collator,
-        compute_metrics=compute_metrics,
         callbacks=[CarbonTrackerCallback(epochs), PerplexityCallback()],
     )
 

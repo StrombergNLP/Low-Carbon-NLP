@@ -9,4 +9,4 @@
 # Print out the hostname of the node the job is running on
 pip3 install --user transformers datasets carbontracker
 pip3 install --user torch torchvision
-python3 Low-Carbon-NLP/src/experiment.py
+python3 src/experiment.py

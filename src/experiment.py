@@ -27,7 +27,7 @@ def main():
         dataset = load_dataset(config['dataset'], script_version='master')
         tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
 
-        dataset_reduced = dataset['train']['text'][:2000]
+        dataset_reduced = dataset['train']['text'][:100000]
         del dataset
         inputs = tokenizer.batch_encode_plus(
             dataset_reduced, truncation=True, padding=True, verbose=True, max_length=config['model_parameters'][0]['max_position_embeddings']
@@ -51,8 +51,9 @@ def main():
             per_device_eval_batch_size=config['batch_size'],
             warmup_steps=opt_param['warmup_steps'],
             weight_decay=opt_param['weight_decay'],
-            logging_dir='./logs'
-        )
+            logging_dir='./logs',
+            eval_accumulation_steps=10 
+       )
 
         trainer = Trainer(
             model=model.model,
