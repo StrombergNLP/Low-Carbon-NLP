@@ -1,4 +1,5 @@
 import os
+import random
 import json
 import transformers
 import torch
@@ -20,16 +21,17 @@ def main():
     path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'config'))
 
     with open(path + '/config.json') as json_file:
+        random.seed(25565
+        )
         config = json.load(json_file)
         epochs = config['train_epochs']
-
 
         dataset = load_dataset(config['dataset'], script_version='master')
         tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
 
         dataset_reduced = dataset['train']['text'][:100000]
         del dataset
-        dataset_reduced.shuffle(seed=25565)
+        random.shuffle(dataset_reduced)
         dataset_reduced = dataset_reduced[:50000]
 
         inputs = tokenizer.batch_encode_plus(
