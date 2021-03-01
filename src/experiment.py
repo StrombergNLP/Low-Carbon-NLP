@@ -28,7 +28,7 @@ def main():
         tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
 
         dataset_reduced = dataset['train']['text'][:100000]
-	del dataset
+	    del dataset
         dataset_reduced.shuffle(seed=25565)
         dataset_reduced = dataset_reduced[:50000]
 
