@@ -29,7 +29,7 @@ space = hp.choice('params', [
     }
 ])
 
-tials = Trials()
+trials = Trials()
 best = fmin(objective,
             space=space,
             algo=tpe.suggest,
