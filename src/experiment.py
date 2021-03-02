@@ -21,8 +21,7 @@ def main():
     path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'config'))
 
     with open(path + '/config.json') as json_file:
-        random.seed(25565
-        )
+        random.seed(25565)
         config = json.load(json_file)
         epochs = config['train_epochs']
 
@@ -32,7 +31,7 @@ def main():
         dataset_reduced = dataset['train']['text'][:100000]
         del dataset
         random.shuffle(dataset_reduced)
-        dataset_reduced = dataset_reduced[:50000]
+        #dataset_reduced = dataset_reduced[:50000]
 
         inputs = tokenizer.batch_encode_plus(
             dataset_reduced, truncation=True, padding=True, verbose=True, max_length=config['model_parameters'][0]['max_position_embeddings']

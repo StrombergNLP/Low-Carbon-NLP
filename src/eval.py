@@ -1,4 +1,5 @@
 import os
+import random
 import math
 import torch
 import transformers
@@ -16,10 +17,14 @@ from callbacks.CarbonTrackerCallback import CarbonTrackerCallback
 
 def main():
     epochs = 1
-    dataset = load_dataset('cc_news', script_version='master')
+    torch.cuda.device(1)
+    random.seed(25565)
+
+    dataset = load_dataset(config['dataset'], script_version='master')
     tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
     dataset_reduced = dataset['train']['text'][:200]
     del dataset
+    random.shuffle(dataset_reduced)
 
     inputs = tokenizer.batch_encode_plus(
         dataset_reduced, truncation=True, padding=True, verbose=True, max_length=512
