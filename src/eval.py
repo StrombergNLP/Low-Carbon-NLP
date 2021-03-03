@@ -20,7 +20,7 @@ def main():
     torch.cuda.device(1)
     random.seed(25565)
 
-    dataset = load_dataset(config['dataset'], script_version='master')
+    dataset = load_dataset('cc_news', script_version='master')
     tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
     dataset_reduced = dataset['train']['text'][:200]
     del dataset
