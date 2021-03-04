@@ -22,7 +22,7 @@ def main():
 
     dataset = load_dataset('cc_news', script_version='master')
     tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
-    dataset_reduced = dataset['train']['text'][:200]
+    dataset_reduced = dataset['train']['text'][100000:100200]
     del dataset
     random.shuffle(dataset_reduced)
 
