@@ -3,6 +3,7 @@ import random
 import json
 import transformers
 import torch
+import math
 
 from transformers import EvalPrediction
 from transformers import Trainer, TrainingArguments
@@ -70,7 +71,9 @@ def main():
             optimizers=(optimizer, scheduler)
         )
 
-        trainer.train()
+        train_metrics = trainer.train()
+        loss = train_metrics['training_loss']
+        perplexity = math.exp(loss)
         trainer.save_model('trained_model')
 
 
