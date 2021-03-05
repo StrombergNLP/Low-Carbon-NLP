@@ -72,7 +72,7 @@ def main():
         )
 
         train_metrics = trainer.train()
-        loss = train_metrics['training_loss']
+        _, loss, metrics = train_metrics
         perplexity = math.exp(loss)
         trainer.save_model('trained_model')
 
