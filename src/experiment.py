@@ -76,10 +76,7 @@ def main():
         perplexity = math.exp(loss)
 
         # This is v erry cringe code
-        energy_usages = tracker_callback.tracker.tracker.total_energy_per_epoch()
-        energy = energy_usages.sum()
-
-        tracker_callback.tracker.stop()
+        energy = tracker_callback.measurements[-1]
 
         energy_loss = energy * perplexity
 
