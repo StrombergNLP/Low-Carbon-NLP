@@ -32,7 +32,7 @@ def main():
         dataset_reduced = dataset['train']['text'][:100000]
         del dataset
         random.shuffle(dataset_reduced)
-        #dataset_reduced = dataset_reduced[:50000]
+        dataset_reduced = dataset_reduced[:1000]
 
         inputs = tokenizer.batch_encode_plus(
             dataset_reduced, truncation=True, padding=True, verbose=True, max_length=config['model_parameters'][0]['max_position_embeddings']
@@ -72,7 +72,7 @@ def main():
         )
 
         train_metrics = trainer.train()
-        loss = train_metrics['training_loss']
+        _, loss, metrics = train_metrics
         perplexity = math.exp(loss)
         trainer.save_model('trained_model')
 
