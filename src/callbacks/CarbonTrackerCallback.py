@@ -13,4 +13,4 @@ class CarbonTrackerCallback(TrainerCallback):
         self.tracker.epoch_end()
 
     def on_train_end(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
-        self.tracker.stop()
+        pass

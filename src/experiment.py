@@ -79,6 +79,8 @@ def main():
         energy_usages = tracker_callback.tracker.tracker.total_energy_per_epoch()
         energy = energy_usages.sum()
 
+        tracker_callback.tracker.stop()
+
         energy_loss = energy * perplexity
 
         print('Perplexity: {perplexity}')
