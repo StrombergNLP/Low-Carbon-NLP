@@ -48,6 +48,7 @@ def main():
         opt_param = config['optimizer_parameters'][0]
         optimizer = AdamW(params=model.parameters(), lr=opt_param['lr'], betas=(opt_param['beta_one'], opt_param['beta_two']), eps=opt_param['eps'], weight_decay=opt_param['weight_decay'])
         scheduler = None
+        tracker_callback = CarbonTrackerCallback(epochs)
 
         training_args = TrainingArguments(
             output_dir='./results',
@@ -66,25 +67,24 @@ def main():
             train_dataset=inputs['input_ids'],
             eval_dataset=inputs['input_ids'],
             data_collator=data_collator,
-            compute_metrics=compute_metrics,
-            callbacks=[CarbonTrackerCallback(epochs), PerplexityCallback()],
+            callbacks=[tracker_callback, PerplexityCallback()],
             optimizers=(optimizer, scheduler)
         )
 
         train_metrics = trainer.train()
         _, loss, metrics = train_metrics
         perplexity = math.exp(loss)
+
+        # This is v erry cringe code
+        energy_usages = tracker_callback.tracker.tracker.total_energy_per_epoch()
+        energy = energy_usages.sum()
+
+        energy_loss = energy * perplexity
+
+        print('Perplexity: {perplexity}')
+        print('Energy Consumption: {energy}')
+        print('Energy Loss: {}')
         trainer.save_model('trained_model')
-
-
-def compute_metrics(eval_prediction: EvalPrediction):
-    # Computes the perplexity
-    loss = torch.nn.CrossEntropyLoss()(eval_prediction[0], eval_prediction[1])
-    metrics = {
-        'loss': loss,
-        'perplexity': 2**loss
-    }
-    return metrics
 
 
 if __name__ == '__main__':
