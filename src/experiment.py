@@ -83,7 +83,7 @@ def main():
 
         print('Perplexity: {perplexity}')
         print('Energy Consumption: {energy}')
-        print('Energy Loss: {}')
+        print('Energy Loss: {energy_loss}')
         trainer.save_model('trained_model')
 
 
