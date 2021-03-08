@@ -76,7 +76,8 @@ def main():
         perplexity = math.exp(loss)
 
         energy = tracker_callback.measurements[-1]
-
+        energy_loss = energy * perplexity
+        
         print('Perplexity: {}'.format(perplexity))
         print('Energy Consumption: {}'.format(energy))
         print('Energy Loss: {}'.format(energy_loss))
