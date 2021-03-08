@@ -1,7 +1,7 @@
 {
     "model_name": "roberta-base",
     "dataset": "cc_news",
-    "train_epochs": 1,
+    "train_epochs": 3,
     "batch_size": 8,
 
     "model_parameters": [{
