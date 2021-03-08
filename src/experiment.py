@@ -32,7 +32,7 @@ def main():
         dataset_reduced = dataset['train']['text'][:100000]
         del dataset
         random.shuffle(dataset_reduced)
-        dataset_reduced = dataset_reduced[:1000]
+        dataset_reduced = dataset_reduced[:20000]
 
         inputs = tokenizer.batch_encode_plus(
             dataset_reduced, truncation=True, padding=True, verbose=True, max_length=config['model_parameters'][0]['max_position_embeddings']
