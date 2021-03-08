@@ -32,7 +32,7 @@ def main():
         dataset_reduced = dataset['train']['text'][:100000]
         del dataset
         random.shuffle(dataset_reduced)
-        dataset_reduced = dataset_reduced[:20000]
+        dataset_reduced = dataset_reduced[:1000]
 
         inputs = tokenizer.batch_encode_plus(
             dataset_reduced, truncation=True, padding=True, verbose=True, max_length=config['model_parameters'][0]['max_position_embeddings']
@@ -75,12 +75,20 @@ def main():
         _, loss, metrics = train_metrics
         perplexity = math.exp(loss)
 
+        # This is v erry cringe code
         energy = tracker_callback.measurements[-1]
+        sum_energy = sum(tracker_callback.measurements)
+
         energy_loss = energy * perplexity
-        
+        sum_energy_loss = sum_energy * perplexity
+
+        print('#######################################')
         print('Perplexity: {}'.format(perplexity))
         print('Energy Consumption: {}'.format(energy))
         print('Energy Loss: {}'.format(energy_loss))
+        print('Sum Energy Loss: {}'.format(sum_energy_loss))
+        print('Energy Measurements: {}'.format(tracker_callback.measurements))
+        print('#######################################')
         trainer.save_model('trained_model')
 
 
