@@ -32,7 +32,7 @@ def main():
         dataset_reduced = dataset['train']['text'][:100000]
         del dataset
         random.shuffle(dataset_reduced)
-        dataset_reduced = dataset_reduced[:1000]
+        dataset_reduced = dataset_reduced[:2000]
 
         inputs = tokenizer.batch_encode_plus(
             dataset_reduced, truncation=True, padding=True, verbose=True, max_length=config['model_parameters'][0]['max_position_embeddings']
@@ -86,6 +86,7 @@ def main():
         print('Perplexity: {}'.format(perplexity))
         print('Energy Consumption: {}'.format(energy))
         print('Energy Loss: {}'.format(energy_loss))
+        print('Sum Energy: {}'.format(sum_energy))
         print('Sum Energy Loss: {}'.format(sum_energy_loss))
         print('Energy Measurements: {}'.format(tracker_callback.measurements))
         print('#######################################')
