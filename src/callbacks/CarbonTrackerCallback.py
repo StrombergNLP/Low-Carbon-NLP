@@ -17,4 +17,9 @@ class CarbonTrackerCallback(TrainerCallback):
         self.tracker.epoch_end()
 
     def on_train_end(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
+        energy_usages = self.tracker.tracker.total_energy_per_epoch()
+        energy = energy_usages.sum()
+        self.measurements.append(energy)
         self.tracker.stop()
+
+        
