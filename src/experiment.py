@@ -11,6 +11,7 @@ from transformers import RobertaTokenizerFast
 from transformers import DataCollatorForLanguageModeling
 from transformers import AdamW
 from datasets import load_dataset
+from carbontracker import parser
 from model.RoBERTaModel import RoBERTaModel
 from callbacks.CarbonTrackerCallback import CarbonTrackerCallback
 from callbacks.PerplexityCallback import PerplexityCallback
@@ -48,7 +49,6 @@ def main():
         opt_param = config['optimizer_parameters'][0]
         optimizer = AdamW(params=model.parameters(), lr=opt_param['lr'], betas=(opt_param['beta_one'], opt_param['beta_two']), eps=opt_param['eps'], weight_decay=opt_param['weight_decay'])
         scheduler = None
-        tracker_callback = CarbonTrackerCallback(epochs)
 
         training_args = TrainingArguments(
             output_dir='./results',
@@ -67,7 +67,7 @@ def main():
             train_dataset=inputs['input_ids'],
             eval_dataset=inputs['input_ids'],
             data_collator=data_collator,
-            callbacks=[tracker_callback, PerplexityCallback()],
+            callbacks=[CarbonTrackerCallback(epochs), PerplexityCallback()],
             optimizers=(optimizer, scheduler)
         )
 
@@ -76,20 +76,19 @@ def main():
         perplexity = math.exp(loss)
 
         # This is v erry cringe code
-        energy = tracker_callback.measurements[-1]
-        sum_energy = sum(tracker_callback.measurements)
+        logs = parser.parse_all_logs(log_dir='./carbon_logs/')
+        latest_log = logs[len(logs)-1]
+        energy_consumption = latest_log['actual']['energy (kWh)']
+        
+        energy_loss = perplexity * energy_consumption
+        
+        print('##################################')
+        print(f'Energy Consumption: {energy_consumption}')
+        print(f'Perplexity: {perplexity}')
+        print(f'Energy Loss: {energy_loss}')
+        print('##################################')
+        
 
-        energy_loss = energy * perplexity
-        sum_energy_loss = sum_energy * perplexity
-
-        print('#######################################')
-        print('Perplexity: {}'.format(perplexity))
-        print('Energy Consumption: {}'.format(energy))
-        print('Energy Loss: {}'.format(energy_loss))
-        print('Sum Energy: {}'.format(sum_energy))
-        print('Sum Energy Loss: {}'.format(sum_energy_loss))
-        print('Energy Measurements: {}'.format(tracker_callback.measurements))
-        print('#######################################')
         trainer.save_model('trained_model')
 
 
