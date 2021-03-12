@@ -11,7 +11,7 @@ def main():
         tokenizer="roberta-base"
     )
 
-    print(fill_mask("Let's get together and <mask> sometime!"))
+    print(fill_mask("The capital of France is <mask>."))
 
 if __name__ == '__main__':
     main()
