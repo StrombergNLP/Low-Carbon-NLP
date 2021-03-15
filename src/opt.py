@@ -130,8 +130,8 @@ space = {
         {'act_type': 'silu'},
         {'act_type': 'gelu_new'},
     ]),
-    'hidden_dropout_prob': hp.normal('hidden_dropout_prob', 0.1, 0.1),
-    'attention_probs_dropout_prog': hp.normal('attention_prob_dropout_prog', 0.1, 0.1),
+    'hidden_dropout_prob': hp.uniform('hidden_dropout_prob', 0.1, 1),
+    'attention_probs_dropout_prog': hp.uniform('attention_prob_dropout_prog', 0.1, 1),
     'max_position_embeddings': hp.uniformint('max_position_embeddings', 1, 512),
     'type_vocab_size': 1,
     'initializer_range': 0.02,
@@ -147,12 +147,10 @@ space = {
 }
 
 
-trials = Trials()
 best = fmin(objective,
             space=space,
             algo=tpe.suggest,
-            max_evals=100,
-            trials=trials)
+            max_evals=100)
 
 
 with open(results_path + '/' + filename, 'a+') as log_file:
