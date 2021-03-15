@@ -120,7 +120,7 @@ def get_dataset(dataset_name, dataset_size):
 
 space = {
     'vocab_size': hp.uniformint('vocab_size', 1, 30522),
-    'hidden_size': hp.uniformint('hidden_size', 1, 768),
+    'hidden_size': hp.uniformint('hidden_size_multiplier', 1, 100),
     'num_hidden_layers': hp.uniformint('hidden_layers', 1, 12),
     'num_attention_heads': hp.uniformint('attention_heads', 1, 18),
     'intermediate_size': hp.uniformint('intermediate_size', 1, 3072),

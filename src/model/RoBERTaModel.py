@@ -19,7 +19,7 @@ class RoBERTaModel(nn.Module):
 
         self.config = RobertaConfig(
             vocab_size=model_parameters['vocab_size'],
-            hidden_size=model_parameters['hidden_size'],
+            hidden_size=model_parameters['hidden_size'] * model_parameters['num_attention_heads'],
             num_hidden_layers=model_parameters['num_hidden_layers'],
             num_attention_heads=model_parameters['num_attention_heads'],
             intermediate_size=model_parameters['intermediate_size'],
