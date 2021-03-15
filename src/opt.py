@@ -125,10 +125,10 @@ space = {
     'num_attention_heads': hp.uniformint('attention_heads', 1, 18),
     'intermediate_size': hp.uniformint('intermediate_size', 1, 3072),
     'hidden_act': hp.choice('hidden_act', [
-        {'act_type': 'gelu'},
-        {'act_type': 'relu'},
-        {'act_type': 'silu'},
-        {'act_type': 'gelu_new'},
+        'gelu',
+        'relu',
+        'silu',
+        'gelu_new'
     ]),
     'hidden_dropout_prob': hp.uniform('hidden_dropout_prob', 0.1, 1),
     'attention_probs_dropout_prog': hp.uniform('attention_prob_dropout_prog', 0.1, 1),
@@ -138,9 +138,9 @@ space = {
     'layer_norm_eps': 1e-12,
     'gradient_checkpointing': False,
     'position_embedding_type': hp.choice('position_embedding_type', [
-        {'embedding_type': 'absolute'},
-        {'embedding_type': 'relative_key'},
-        {'embedding_type': 'relative_key_query'},
+        'absolute',
+        'relative_key',
+        'relative_key_query'
     ]),
     'use_cache': True,
     'dataset_size': hp.uniformint('dataset_size', 1, 100000)
