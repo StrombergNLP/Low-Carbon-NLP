@@ -1,16 +1,128 @@
+import os
+import random
+import json
+import transformers
+import torch
+import math
+
+from transformers import EvalPrediction
+from transformers import Trainer, TrainingArguments
+from transformers import RobertaTokenizerFast
+from transformers import DataCollatorForLanguageModeling
+from transformers import AdamW
+from datasets import load_dataset
+from carbontracker import parser
+from model.RoBERTaModel import RoBERTaModel
+from callbacks.CarbonTrackerCallback import CarbonTrackerCallback
+from callbacks.PerplexityCallback import PerplexityCallback
+
 from hyperopt import fmin, tpe, hp, Trials
 
-def objective(attention_heads):
-    return {
-        'loss': attention_heads ** 2,
-    }
+torch.cuda.device(1)
+transformers.logging.set_verbosity_info()
+
+config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'config'))
+results_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'results'))
+now = datetime.now()
+dt_string = now.strftime('%Y-%d-%m_T%H-%M-%S')
+filename = dt_string + "_" + "opt_log.txt"
+
+def objective(params):
+    """
+    Function to set up the model and train it.
+    Loss function is based on energy consumption times perplexity
+    """
+
+    with open(config_path + '/config.json') as json_file:
+        random.seed(25565)
+        config = json.load(json_file)
+        epochs = config['train_epochs']
+
+        tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
+        dataset = get_dataset(config['dataset'])
+
+        inputs = tokenizer.batch_encode_plus(
+            dataset, truncation=True, padding=True, verbose=True, max_length=config['model_parameters'][0]['max_position_embeddings']
+        )
+        data_collator = DataCollatorForLanguageModeling(
+            tokenizer=tokenizer, mlm=True, mlm_probability=0.15
+        )
+
+        model = RoBERTaModel(params)
+        model.model.resize_token_embeddings(len(tokenizer))
+
+        opt_param = config['optimizer_parameters'][0]
+        optimizer = AdamW(params=model.parameters(), lr=opt_param['lr'], betas=(opt_param['beta_one'], opt_param['beta_two']), eps=opt_param['eps'], weight_decay=opt_param['weight_decay'])
+        scheduler = None
+
+        training_args = TrainingArguments(
+            output_dir='./results',
+            num_train_epochs=epochs,
+            per_device_train_batch_size=config['batch_size'],
+            per_device_eval_batch_size=config['batch_size'],
+            warmup_steps=opt_param['warmup_steps'],
+            weight_decay=opt_param['weight_decay'],
+            logging_dir='./logs',
+            eval_accumulation_steps=10 
+       )
+
+        trainer = Trainer(
+            model=model.model,
+            args=training_args,
+            train_dataset=inputs['input_ids'],
+            eval_dataset=inputs['input_ids'],
+            data_collator=data_collator,
+            callbacks=[CarbonTrackerCallback(epochs), PerplexityCallback()],
+            optimizers=(optimizer, scheduler)
+        )
+
+        train_metrics = trainer.train()
+        _, loss, metrics = train_metrics
+        perplexity = math.exp(loss)
+
+        # This is v erry cringe code
+        logs = parser.parse_all_logs(log_dir='./carbon_logs/')
+        latest_log = logs[len(logs)-1]
+        energy_consumption = latest_log['actual']['energy (kWh)']
+        
+        energy_loss = perplexity * energy_consumption
+        
+        print('##################################')
+        print(f'Energy Consumption: {energy_consumption}')
+        print(f'Perplexity: {perplexity}')
+        print(f'Energy Loss: {energy_loss}')
+        print('##################################')
+        
+
+        trainer.save_model('trained_model')
+        
+        with open(results_path + '/' + filename, 'a+') as log_file:
+            log_file.write('###################################\n')
+            log_file.write('MODEL PARAMS\n')
+            log_file.write(json.dumps(params))
+            log_file.write('\n')
+            log_file.write(f'loss: {loss}\n')
+
+        return energy_loss
+
+
+def get_dataset(dataset_name):
+    dataset = load_dataset(dataset_name, script_version='master')
+
+    dataset_reduced = dataset['train']['text'][:100000]
+    del dataset
+    random.shuffle(dataset_reduced)
+    dataset_reduced = dataset_reduced[:2000]
+
+    return dataset_reduced
+
 
 space = {
-    'vocab_size': hp.uniform('vocab_size', 15261, 30522),
-    'hidden_size': hp.uniform('hidden_size', 384, 768),
-    'hidden_layers': hp.uniform('hidden_layers', 3, 12),
-    'attention_heads': hp.uniform('attention_heads_x', 6, 18),
-    'intermediate_size': hp.uniform('intermediate_size', 1536, 3072),
+    'vocab_size': hp.uniformint('vocab_size', 7630, 30522),
+    'hidden_size': hp.uniformint('hidden_size', 192, 768),
+    'num_hidden_layers': hp.uniformint('hidden_layers', 1, 12),
+    'num_attention_heads': hp.uniformint('attention_heads', 1, 18),
+    'intermediate_size': hp.uniformint('intermediate_size', 768, 3072),
     'hidden_act': hp.choice('hidden_act', [
         {'act_type': 'gelu'},
         {'act_type': 'relu'},
@@ -18,14 +130,20 @@ space = {
         {'act_type': 'gelu_new'},
     ]),
     'hidden_dropout_prob': hp.normal('hidden_dropout_prob', 0.1, 0.1),
-    'attention_prob_dropout_prog': hp.normal('attention_prob_dropout_prog', 0.1, 0.1),
-    'max_position_embeddings': hp.uniform('max_position_embeddings', 128, 256),
+    'attention_probs_dropout_prog': hp.normal('attention_prob_dropout_prog', 0.1, 0.1),
+    'max_position_embeddings': hp.uniformint('max_position_embeddings', 128, 512),
+    'type_vocab_size': 1,
+    'initializer_range': 0.02,
+    'layer_norm_eps': 1e-12,
+    'gradient_checkpointing': False,
     'position_embedding_type': hp.choice('position_embedding_type', [
         {'embedding_type': 'absolute'},
         {'embedding_type': 'relative_key'},
         {'embedding_type': 'relative_key_query'},
-    ])
+    ]),
+    'use_cache': True
 }
+
 
 trials = Trials()
 best = fmin(objective,
