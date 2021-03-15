@@ -141,7 +141,7 @@ space = {
         {'embedding_type': 'relative_key'},
         {'embedding_type': 'relative_key_query'},
     ]),
-    'use_cache': True
+    'use_cache': True,
     'dataset_size': hp.uniformint('dataset_size', 1, 100000)
 }
 
