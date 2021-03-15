@@ -16,7 +16,7 @@ from model.RoBERTaModel import RoBERTaModel
 from callbacks.CarbonTrackerCallback import CarbonTrackerCallback
 from callbacks.PerplexityCallback import PerplexityCallback
 
-from hyperopt import fmin, tpe, hp, Trials
+from hyperopt import fmin, tpe, hp, Trials, space_eval
 
 torch.cuda.device(1)
 transformers.logging.set_verbosity_info()
@@ -153,5 +153,8 @@ best = fmin(objective,
             max_evals=100,
             trials=trials)
 
-print(best)
 
+with open(results_path + '/' + filename, 'a+') as log_file:
+    log_file.write('###################################\n')
+    log_file.write(f'BEST: {best}\n')
+    log_file.write(f'SPACE EVAL: {space_eval(space, best)}\n')
