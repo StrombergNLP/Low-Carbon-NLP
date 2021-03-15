@@ -102,7 +102,9 @@ def objective(params):
             log_file.write('MODEL PARAMS\n')
             log_file.write(json.dumps(params))
             log_file.write('\n')
-            log_file.write(f'loss: {loss}\n')
+            log_file.write(f'Perplexity: {perplexity}\n')
+            log_file.write(f'Energy Consumption: {energy_consumption}\n')
+            log_file.write(f'Energy Loss: {energy_loss}\n')
 
         return energy_loss
 
