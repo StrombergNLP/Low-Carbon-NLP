@@ -39,7 +39,7 @@ def objective(params):
         epochs = config['train_epochs']
 
         tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
-        dataset = get_dataset(config['dataset'])
+        dataset = get_dataset(config['dataset'], params['dataset_size'])
 
         inputs = tokenizer.batch_encode_plus(
             dataset, truncation=True, padding=True, verbose=True, max_length=config['model_parameters'][0]['max_position_embeddings']
@@ -106,23 +106,23 @@ def objective(params):
         return energy_loss
 
 
-def get_dataset(dataset_name):
+def get_dataset(dataset_name, dataset_size):
     dataset = load_dataset(dataset_name, script_version='master')
 
     dataset_reduced = dataset['train']['text'][:100000]
     del dataset
     random.shuffle(dataset_reduced)
-    dataset_reduced = dataset_reduced[:2000]
+    dataset_reduced = dataset_reduced[:dataset_size]
 
     return dataset_reduced
 
 
 space = {
-    'vocab_size': hp.uniformint('vocab_size', 7630, 30522),
-    'hidden_size': hp.uniformint('hidden_size', 192, 768),
+    'vocab_size': hp.uniformint('vocab_size', 1, 30522),
+    'hidden_size': hp.uniformint('hidden_size', 1, 768),
     'num_hidden_layers': hp.uniformint('hidden_layers', 1, 12),
     'num_attention_heads': hp.uniformint('attention_heads', 1, 18),
-    'intermediate_size': hp.uniformint('intermediate_size', 768, 3072),
+    'intermediate_size': hp.uniformint('intermediate_size', 1, 3072),
     'hidden_act': hp.choice('hidden_act', [
         {'act_type': 'gelu'},
         {'act_type': 'relu'},
@@ -131,7 +131,7 @@ space = {
     ]),
     'hidden_dropout_prob': hp.normal('hidden_dropout_prob', 0.1, 0.1),
     'attention_probs_dropout_prog': hp.normal('attention_prob_dropout_prog', 0.1, 0.1),
-    'max_position_embeddings': hp.uniformint('max_position_embeddings', 128, 512),
+    'max_position_embeddings': hp.uniformint('max_position_embeddings', 1, 512),
     'type_vocab_size': 1,
     'initializer_range': 0.02,
     'layer_norm_eps': 1e-12,
@@ -142,6 +142,7 @@ space = {
         {'embedding_type': 'relative_key_query'},
     ]),
     'use_cache': True
+    'dataset_size': hp.uniformint('dataset_size', 1, 100000)
 }
 
 
