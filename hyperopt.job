@@ -8,15 +8,14 @@
 #SBATCH --time=3-00:00:00          # Run time (hh:mm:ss) - run for one hour max
 #SBATCH --partition=red		   # Run on either the Red or Brown queue
 
-pip3 install --user datasets transformers carbontracker deepspeed
+pip3 install --user datasets transformers carbontracker deepspeed hyperopt
 pip3 install --user torch torchvision
 
-DB=---FIND NAME---
 # path to the repository containing the script
 export PYTHONPATH="./src/"
 
 hyperopt-mongo-worker \
-    --mongo=ouga03:1234/$DB \
+    --mongo=cluster0.v52wp.mongodb.net/test/jobs \
     --poll-interval=1 \
     --reserve-timeout=3600 \
     --workdir="./src/"

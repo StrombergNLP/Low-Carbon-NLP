@@ -17,7 +17,8 @@ from model.RoBERTaModel import RoBERTaModel
 from callbacks.CarbonTrackerCallback import CarbonTrackerCallback
 from callbacks.PerplexityCallback import PerplexityCallback
 
-from hyperopt import fmin, tpe, hp, Trials, space_eval
+from hyperopt import fmin, tpe, hp, space_eval
+from hyperopt.mongoexp import MongoTrials
 
 torch.cuda.device(1)
 transformers.logging.set_verbosity_info()
@@ -146,7 +147,7 @@ space = {
     'use_cache': True,
 }
 
-
+trials = MongoTrials('mongodb+srv://cluster0.v52wp.mongodb.net/test/jobs', exp_key='exp1')
 best = fmin(objective,
             space=space,
             algo=tpe.suggest,
