@@ -147,7 +147,7 @@ space = {
     'use_cache': True,
 }
 
-trials = MongoTrials('mongodb+srv://cluster0.v52wp.mongodb.net/test/jobs', exp_key='exp1')
+trials = MongoTrials('mongodb+srv://mongolos:embracemongo@cluster0.v52wp.mongodb.net/test/jobs', exp_key='exp1')
 best = fmin(objective,
             space=space,
             algo=tpe.suggest,
