@@ -28,6 +28,8 @@ now = datetime.now()
 dt_string = now.strftime('%Y-%d-%m_T%H-%M-%S')
 filename = dt_string + "_" + "opt_log.txt"
 
+dataset = get_dataset(config['dataset'])
+
 def objective(params):
     """
     Function to set up the model and train it.
@@ -40,7 +42,6 @@ def objective(params):
         epochs = config['train_epochs']
 
         tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
-        dataset = get_dataset(config['dataset'], params['dataset_size'])
 
         inputs = tokenizer.batch_encode_plus(
             dataset, truncation=True, padding=True, verbose=True, max_length=config['model_parameters'][0]['max_position_embeddings']
@@ -109,13 +110,11 @@ def objective(params):
         return energy_loss
 
 
-def get_dataset(dataset_name, dataset_size):
+def get_dataset(dataset_name+):
     dataset = load_dataset(dataset_name, script_version='master')
 
     dataset_reduced = dataset['train']['text'][:100000]
     del dataset
-    random.shuffle(dataset_reduced)
-    dataset_reduced = dataset_reduced[:dataset_size]
 
     return dataset_reduced
 
@@ -145,7 +144,6 @@ space = {
         'relative_key_query'
     ]),
     'use_cache': True,
-    'dataset_size': hp.uniformint('dataset_size', 1, 100000)
 }
 
 
