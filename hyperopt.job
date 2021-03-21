@@ -15,7 +15,7 @@ pip3 install --user torch torchvision
 export PYTHONPATH="./src/"
 
 hyperopt-mongo-worker \
-    --mongo=cluster0.v52wp.mongodb.net/test/jobs \
+    --mongo=mongodb+srv://mongolos:embracemongo@cluster0.v52wp.mongodb.net/test/jobs \
     --poll-interval=1 \
     --reserve-timeout=3600 \
     --workdir="./src/"
