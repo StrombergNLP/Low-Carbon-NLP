@@ -111,7 +111,7 @@ def objective(params):
         return energy_loss
 
 
-def get_dataset(dataset_name+):
+def get_dataset(dataset_name):
     dataset = load_dataset(dataset_name, script_version='master')
 
     dataset_reduced = dataset['train']['text'][:100000]
