@@ -147,7 +147,11 @@ space = {
     'use_cache': True,
 }
 
-trials = MongoTrials('mongodb+srv://mongolos:embracemongo@cluster0.v52wp.mongodb.net/test/jobs', exp_key='exp1')
+<<<<<<< HEAD
+trials = MongoTrials('mongodb://root:pass123@135.181.38.74:27017/admin/jobs?authSource=admin', exp_key='exp1')
+=======
+trials = MongoTrials('mongodb://admin:admin123@135.181.38.74:27017/test/jobs', exp_key='exp1')
+>>>>>>> 61303869304294fdbbcac1461527e2237cd9bde3
 best = fmin(objective,
             space=space,
             algo=tpe.suggest,
