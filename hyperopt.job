@@ -10,7 +10,7 @@
 
 pip3 install --user datasets transformers carbontracker deepspeed
 pip3 install --user torch torchvision
-cd hyperopt && python3 setup.py install && cd ..
+cd hyperopt && python3 setup.py install --user && cd ..
 
 # path to the repository containing the script
 export PYTHONPATH="./src/"
