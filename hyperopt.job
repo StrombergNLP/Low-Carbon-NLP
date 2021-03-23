@@ -16,9 +16,7 @@ cd hyperopt && python3 setup.py install --user && cd ..
 export PYTHONPATH="./src/"
 
 hyperopt-mongo-worker \
-    --mongo=cluster0-shard-00-00.v52wp.mongodb.net:27017/test \
     --mongo=cluster0-shard-00-01.v52wp.mongodb.net:27017/test \
-    --mongo=cluster0-shard-00-02.v52wp.mongodb.net:27017/test \
     --poll-interval=1 \
     --reserve-timeout=3600 \
     --workdir="./src/"
