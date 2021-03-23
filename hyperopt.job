@@ -15,5 +15,12 @@ pip3 install --user torch torchvision pymongo
 export PYTHONPATH="./src/"
 
 hyperopt-mongo-worker \
+<<<<<<< HEAD
     --mongo=root:pass123@135.181.38.74:27017/admin \
     --workdir="src"
+=======
+    --mongo=135.181.38.74:27017/test \
+    --poll-interval=1 \
+    --reserve-timeout=3600 \
+    --workdir="./src/"
+>>>>>>> 61303869304294fdbbcac1461527e2237cd9bde3

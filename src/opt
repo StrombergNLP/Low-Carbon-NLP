@@ -231,3 +231,46 @@ INFO:hyperopt.mongoexp:no job found, sleeping for 1.4s
 INFO:hyperopt.mongoexp:no job found, sleeping for 4.8s
 INFO:hyperopt.mongoexp:no job found, sleeping for 3.0s
 INFO:hyperopt.mongoexp:no job found, sleeping for 4.1s
+Traceback (most recent call last):
+  File "/home/mkon/.local/bin/hyperopt-mongo-worker", line 8, in <module>
+    sys.exit(main())
+  File "/home/mkon/.local/lib/python3.6/site-packages/hyperopt/mongoexp.py", line 1328, in main
+    sys.exit(main_worker())
+  File "/home/mkon/.local/lib/python3.6/site-packages/hyperopt/mongoexp.py", line 1410, in main_worker
+    return main_worker_helper(options, args)
+  File "/home/mkon/.local/lib/python3.6/site-packages/hyperopt/mongoexp.py", line 1321, in main_worker_helper
+    mworker.run_one(reserve_timeout=float(options.reserve_timeout))
+  File "/home/mkon/.local/lib/python3.6/site-packages/hyperopt/mongoexp.py", line 1041, in run_one
+    raise ReserveTimeout()
+hyperopt.mongoexp.ReserveTimeout
+INFO:hyperopt.mongoexp:PROTOCOL mongo
+INFO:hyperopt.mongoexp:USERNAME root
+INFO:hyperopt.mongoexp:HOSTNAME 135.181.38.74
+INFO:hyperopt.mongoexp:PORT 27017
+INFO:hyperopt.mongoexp:PATH /admin/jobs
+INFO:hyperopt.mongoexp:AUTH DB None
+INFO:hyperopt.mongoexp:DB admin
+INFO:hyperopt.mongoexp:COLLECTION jobs
+INFO:hyperopt.mongoexp:PASS ***
+INFO:hyperopt.mongoexp:no job found, sleeping for 4.6s
+INFO:hyperopt.mongoexp:no job found, sleeping for 3.5s
+INFO:hyperopt.mongoexp:no job found, sleeping for 3.5s
+INFO:hyperopt.mongoexp:no job found, sleeping for 4.1s
+INFO:hyperopt.mongoexp:no job found, sleeping for 2.2s
+INFO:hyperopt.mongoexp:no job found, sleeping for 3.5s
+INFO:hyperopt.mongoexp:no job found, sleeping for 4.3s
+INFO:hyperopt.mongoexp:no job found, sleeping for 3.3s
+INFO:hyperopt.mongoexp:no job found, sleeping for 4.8s
+INFO:hyperopt.mongoexp:no job found, sleeping for 2.1s
+INFO:hyperopt.mongoexp:no job found, sleeping for 1.9s
+INFO:hyperopt.mongoexp:no job found, sleeping for 2.7s
+INFO:hyperopt.mongoexp:no job found, sleeping for 4.7s
+INFO:hyperopt.mongoexp:no job found, sleeping for 2.2s
+INFO:hyperopt.mongoexp:no job found, sleeping for 4.5s
+INFO:hyperopt.mongoexp:no job found, sleeping for 4.7s
+INFO:hyperopt.mongoexp:no job found, sleeping for 4.0s
+INFO:hyperopt.mongoexp:no job found, sleeping for 4.6s
+INFO:hyperopt.mongoexp:no job found, sleeping for 1.7s
+INFO:hyperopt.mongoexp:no job found, sleeping for 2.9s
+INFO:hyperopt.mongoexp:no job found, sleeping for 1.5s
+INFO:hyperopt.mongoexp:no job found, sleeping for 4.8s
