@@ -20,6 +20,14 @@ from callbacks.PerplexityCallback import PerplexityCallback
 from hyperopt import fmin, tpe, hp, space_eval
 from hyperopt.mongoexp import MongoTrials
 
+def get_dataset(dataset_name):
+    dataset = load_dataset(dataset_name, script_version='master')
+
+    dataset_reduced = dataset['train']['text'][:100000]
+    del dataset
+
+    return dataset_reduced
+
 torch.cuda.device(1)
 transformers.logging.set_verbosity_info()
 
@@ -29,7 +37,7 @@ now = datetime.now()
 dt_string = now.strftime('%Y-%d-%m_T%H-%M-%S')
 filename = dt_string + "_" + "opt_log.txt"
 
-dataset = get_dataset(config['dataset'])
+dataset = get_dataset('cc_news')
 
 def objective(params):
     """
@@ -111,14 +119,6 @@ def objective(params):
         return energy_loss
 
 
-def get_dataset(dataset_name+):
-    dataset = load_dataset(dataset_name, script_version='master')
-
-    dataset_reduced = dataset['train']['text'][:100000]
-    del dataset
-
-    return dataset_reduced
-
 
 space = {
     'vocab_size': hp.uniformint('vocab_size', 1, 30522),
@@ -134,7 +134,7 @@ space = {
     ]),
     'hidden_dropout_prob': hp.uniform('hidden_dropout_prob', 0.1, 1),
     'attention_probs_dropout_prog': hp.uniform('attention_prob_dropout_prog', 0.1, 1),
-    'max_position_embeddings': hp.uniformint('max_position_embeddings', 1, 512),
+    'max_position_embeddings': 512,
     'type_vocab_size': 1,
     'initializer_range': 0.02,
     'layer_norm_eps': 1e-12,
@@ -147,7 +147,7 @@ space = {
     'use_cache': True,
 }
 
-trials = MongoTrials('mongodb://admin:admin123@135.181.38.74:27017/test/jobs', exp_key='exp1')
+trials = MongoTrials('mongo://root:pass123@135.181.38.74:27017/admin/jobs?authSource=admin', exp_key='exp1')
 best = fmin(objective,
             space=space,
             algo=tpe.suggest,
