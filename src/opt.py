@@ -18,7 +18,7 @@ from transformers import Trainer, TrainingArguments
 from transformers import RobertaTokenizerFast
 from transformers import DataCollatorForLanguageModeling
 from transformers import AdamW
-from datasets import load_dataset
+from datasets import load_dataset, load_from_disk
 from carbontracker import parser
 
 from hyperopt import fmin, tpe, hp, space_eval
