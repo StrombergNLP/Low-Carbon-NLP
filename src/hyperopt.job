@@ -2,7 +2,7 @@
 
 #SBATCH --array=1,3                # We array now boi
 #SBATCH --job-name=hyperopt        # Job name
-#SBATCH --output=opt               # Name of output file (%j expands to jobId)
+#SBATCH --output=opt.%j            # Name of output file (%j expands to jobId)
 #SBATCH --cpus-per-task=6          # Schedule one core
 #SBATCH --mem=128G
 #SBATCH --gres=gpu:1               # Schedule a GPU
