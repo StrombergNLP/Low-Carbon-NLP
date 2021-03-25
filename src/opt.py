@@ -134,7 +134,7 @@ space = {
     ]),
     'hidden_dropout_prob': hp.uniform('hidden_dropout_prob', 0.1, 1),
     'attention_probs_dropout_prog': hp.uniform('attention_prob_dropout_prog', 0.1, 1),
-    'max_position_embeddings': hp.uniformint('max_position_embeddings', 1, 512),
+    'max_position_embeddings': 512,
     'type_vocab_size': 1,
     'initializer_range': 0.02,
     'layer_norm_eps': 1e-12,
