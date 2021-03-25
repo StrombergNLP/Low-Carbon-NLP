@@ -18,7 +18,7 @@ from transformers import Trainer, TrainingArguments
 from transformers import RobertaTokenizerFast
 from transformers import DataCollatorForLanguageModeling
 from transformers import AdamW
-from datasets import load_dataset, load_from_disk
+from datasets import load_dataset, Dataset
 from carbontracker import parser
 
 from hyperopt import fmin, tpe, hp, space_eval
@@ -104,6 +104,13 @@ def get_dataset(dataset_name):
 
     return dataset_reduced
 
+
+def get_dataset_from_disk(dataset_name):
+    data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data/'))
+    dataset = Dataset.from_text(data_path + dataset_name)
+    return dataset
+
+
 torch.cuda.device(1)
 transformers.logging.set_verbosity_info()
 
@@ -113,7 +120,8 @@ now = datetime.now()
 dt_string = now.strftime('%Y-%d-%m_T%H-%M-%S')
 filename = dt_string + "_" + "opt_log.txt"
 
-dataset = get_dataset('cc_news')
+# dataset = get_dataset('cc_news')
+dataset = get_dataset_from_disk('cc_news_reduced')
 
 def objective(params):
     """
