@@ -10,6 +10,6 @@
 pip3 install --user datasets transformers carbontracker deepspeed hyperopt
 pip3 install --user torch torchvision pymongo
 
-nohup python3 opt.py &
-
 sbatch --array=1,2,3 mongo.job
+
+python3 opt.py &
