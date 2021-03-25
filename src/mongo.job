@@ -2,7 +2,8 @@
 
 #SBATCH --job-name=mongo       # Job name
 #SBATCH --output=mongodb               # Name of output file (%j expands to jobId)
-#SBATCH --cpus-per-task=4        # Schedule one core
+#SBATCH --cpus-per-task=6        # Schedule one core
+#SBATCH --gres=gpu:1               # Schedule a GPU
 #SBATCH --time=3-00:00:00          # Run time (hh:mm:ss) - run for one hour max
 #SBATCH --partition=red		       # Run on either the Red or Brown queue
 
@@ -11,4 +12,8 @@ pip3 install --user torch torchvision pymongo
 
 # path to the repository containing the script
 hyperopt-mongo-worker \
-    --mongo=root:pass123@135.181.38.74:27017/admin
+    --mongo=root:pass123@135.181.38.74:27017/admin \
+    --max-jobs=100 \
+    --poll-interval=600 \
+    --reserve-timeout=258000 \
+    --workdir="."
