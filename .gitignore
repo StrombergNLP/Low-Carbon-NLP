@@ -9,3 +9,5 @@
 .history/
 
 src/model/__pycache__/*
+data/cc_news_reduced.txt
+src/load_dataset.py
