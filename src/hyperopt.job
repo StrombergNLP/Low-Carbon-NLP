@@ -14,7 +14,7 @@ pip3 install --user torch torchvision pymongo
 nohup python3 opt.py &
 
 hyperopt-mongo-worker \
-    --mongo=root:pass123@135.181.38.74:27017/admin
+    --mongo=root:pass123@135.181.38.74:27017/admin \
     --max-jobs=100 \
     --poll-interval=600 \
     --reserve-timeout=258000 \
