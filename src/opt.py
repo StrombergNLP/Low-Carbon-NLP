@@ -5,6 +5,9 @@ import transformers
 import torch
 import math
 
+from transformers import TrainerCallback, Trainer, TrainingArguments, TrainerState, TrainerControl
+from carbontracker.tracker import CarbonTracker
+
 from datetime import datetime
 from transformers import EvalPrediction
 from transformers import Trainer, TrainingArguments
@@ -14,11 +17,25 @@ from transformers import AdamW
 from datasets import load_dataset
 from carbontracker import parser
 from model.RoBERTaModel import RoBERTaModel
-from mtotheb.CarbonTrackerCallback import CarbonTrackerCallback
-from mtotheb.PerplexityCallback import PerplexityCallback
 
 from hyperopt import fmin, tpe, hp, space_eval
 from hyperopt.mongoexp import MongoTrials
+
+# This callback for some Hyperopt reason needs to be defined within this file
+class CarbonTrackerCallback(TrainerCallback):
+    def __init__(self, max_epochs):
+        super().__init__()
+        self.tracker = CarbonTracker(epochs=max_epochs, epochs_before_pred=-1, monitor_epochs=-1, verbose=2, log_dir='./carbon_logs/')
+
+    def on_epoch_begin(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
+        self.tracker.epoch_start()
+
+    def on_epoch_end(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
+        self.tracker.epoch_end()
+
+    def on_train_end(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
+        self.tracker.stop()
+
 
 def get_dataset(dataset_name):
     dataset = load_dataset(dataset_name, script_version='master')
@@ -83,7 +100,7 @@ def objective(params):
             train_dataset=inputs['input_ids'],
             eval_dataset=inputs['input_ids'],
             data_collator=data_collator,
-            callbacks=[CarbonTrackerCallback(epochs), PerplexityCallback()],
+            callbacks=[CarbonTrackerCallback(epochs)],
             optimizers=(optimizer, scheduler)
         )
 
@@ -159,3 +176,4 @@ with open(results_path + '/' + filename, 'a+') as log_file:
     log_file.write('###################################\n')
     log_file.write(f'BEST: {best}\n')
     log_file.write(f'SPACE EVAL: {space_eval(space, best)}\n')
+
