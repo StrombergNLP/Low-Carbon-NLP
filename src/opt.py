@@ -37,7 +37,7 @@ now = datetime.now()
 dt_string = now.strftime('%Y-%d-%m_T%H-%M-%S')
 filename = dt_string + "_" + "opt_log.txt"
 
-dataset = get_dataset(config['dataset'])
+dataset = get_dataset('cc_news')
 
 def objective(params):
     """
