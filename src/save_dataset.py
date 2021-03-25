@@ -5,4 +5,6 @@ dataset = load_dataset('cc_news', script_version='master')
 dataset_reduced = dataset['train']['text'][:100000]
 del dataset
 
-dataset_reduced.save_to_disk('cc_news_reduced')
+with open('cc_news_reduced.txt', 'w+', encoding='utf8') as datafile:
+    datafile.writelines(dataset_reduced)
+
