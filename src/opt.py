@@ -20,6 +20,14 @@ from callbacks.PerplexityCallback import PerplexityCallback
 from hyperopt import fmin, tpe, hp, space_eval
 from hyperopt.mongoexp import MongoTrials
 
+def get_dataset(dataset_name):
+    dataset = load_dataset(dataset_name, script_version='master')
+
+    dataset_reduced = dataset['train']['text'][:100000]
+    del dataset
+
+    return dataset_reduced
+
 torch.cuda.device(1)
 transformers.logging.set_verbosity_info()
 
@@ -110,14 +118,6 @@ def objective(params):
 
         return energy_loss
 
-
-def get_dataset(dataset_name):
-    dataset = load_dataset(dataset_name, script_version='master')
-
-    dataset_reduced = dataset['train']['text'][:100000]
-    del dataset
-
-    return dataset_reduced
 
 
 space = {
