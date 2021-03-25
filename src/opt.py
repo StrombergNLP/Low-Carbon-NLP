@@ -5,6 +5,10 @@ import transformers
 import torch
 import math
 
+from torch import nn
+from transformers import RobertaConfig
+from transformers import RobertaForMaskedLM
+
 from transformers import TrainerCallback, Trainer, TrainingArguments, TrainerState, TrainerControl
 from carbontracker.tracker import CarbonTracker
 
