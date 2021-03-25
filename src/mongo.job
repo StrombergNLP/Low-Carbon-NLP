@@ -1,14 +1,16 @@
 #!/bin/bash
 
-#SBATCH --job-name=mongo       # Job name
-#SBATCH --output=mongodb.%j               # Name of output file (%j expands to jobId)
-#SBATCH --cpus-per-task=6        # Schedule one core
+#SBATCH --job-name=mongo           # Job name
+#SBATCH --output=mongodb.%j        # Name of output file (%j expands to jobId)
+#SBATCH --cpus-per-task=6          # Schedule one core
 #SBATCH --gres=gpu:1               # Schedule a GPU
 #SBATCH --time=3-00:00:00          # Run time (hh:mm:ss) - run for one hour max
 #SBATCH --partition=red		       # Run on either the Red or Brown queue
 
 pip3 install --user datasets transformers carbontracker deepspeed hyperopt
 pip3 install --user torch torchvision pymongo
+
+export PYTHONPATH="."
 
 # path to the repository containing the script
 hyperopt-mongo-worker \
