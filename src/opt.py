@@ -14,8 +14,8 @@ from transformers import AdamW
 from datasets import load_dataset
 from carbontracker import parser
 from model.RoBERTaModel import RoBERTaModel
-from callbacks.CarbonTrackerCallback import CarbonTrackerCallback
-from callbacks.PerplexityCallback import PerplexityCallback
+from mtotheb.CarbonTrackerCallback import CarbonTrackerCallback
+from mtotheb.PerplexityCallback import PerplexityCallback
 
 from hyperopt import fmin, tpe, hp, space_eval
 from hyperopt.mongoexp import MongoTrials
