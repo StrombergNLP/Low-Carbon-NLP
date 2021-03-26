@@ -4,6 +4,7 @@ import json
 import transformers
 import torch
 import math
+import sys
 
 from torch import nn
 from transformers import RobertaConfig
@@ -27,10 +28,13 @@ from hyperopt.mongoexp import MongoTrials
 ###########################################################################################
 # Hyperopt sucks at subpackages, so we need to package callbacks and models into one file #
 ###########################################################################################
+
+carbondir = './carbon_logs_' + sys.argv[1] + '/'
+
 class CarbonTrackerCallback(TrainerCallback):
     def __init__(self, max_epochs):
         super().__init__()
-        self.tracker = CarbonTracker(epochs=max_epochs, epochs_before_pred=-1, monitor_epochs=-1, verbose=2, log_dir='./carbon_logs/')
+        self.tracker = CarbonTracker(epochs=max_epochs, epochs_before_pred=-1, monitor_epochs=-1, verbose=2, log_dir=carbondir)
 
     def on_epoch_begin(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
         self.tracker.epoch_start()
@@ -176,7 +180,7 @@ def objective(params):
         perplexity = math.exp(loss)
 
         # This is v erry cringe code
-        logs = parser.parse_all_logs(log_dir='./carbon_logs/')
+        logs = parser.parse_all_logs(log_dir=carbondir)
         latest_log = logs[len(logs)-1]
         energy_consumption = latest_log['actual']['energy (kWh)']
         
