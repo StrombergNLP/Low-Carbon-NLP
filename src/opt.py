@@ -29,12 +29,13 @@ from hyperopt.mongoexp import MongoTrials
 # Hyperopt sucks at subpackages, so we need to package callbacks and models into one file #
 ###########################################################################################
 
-carbondir = './carbon_logs_' + sys.argv[1] + '/'
+carbondir_path = './carbon_logs_' + sys.argv[1] + '/'
+os.mkdir(carbondir_path)
 
 class CarbonTrackerCallback(TrainerCallback):
     def __init__(self, max_epochs):
         super().__init__()
-        self.tracker = CarbonTracker(epochs=max_epochs, epochs_before_pred=-1, monitor_epochs=-1, verbose=2, log_dir=carbondir)
+        self.tracker = CarbonTracker(epochs=max_epochs, epochs_before_pred=-1, monitor_epochs=-1, verbose=2, log_dir=carbondir_path)
 
     def on_epoch_begin(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
         self.tracker.epoch_start()
@@ -180,7 +181,7 @@ def objective(params):
         perplexity = math.exp(loss)
 
         # This is v erry cringe code
-        logs = parser.parse_all_logs(log_dir=carbondir)
+        logs = parser.parse_all_logs(log_dir=carbondir_path)
         latest_log = logs[len(logs)-1]
         energy_consumption = latest_log['actual']['energy (kWh)']
         
