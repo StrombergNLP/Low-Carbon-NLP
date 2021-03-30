@@ -185,6 +185,7 @@ def objective(params):
         # This is v erry cringe code
         time.sleep(60)
         logs = parser.parse_all_logs(log_dir=carbondir_path)
+        print("Log length: ", len(logs))
         latest_log = logs[len(logs)-1]
         energy_consumption = latest_log['actual']['energy (kWh)']
         
