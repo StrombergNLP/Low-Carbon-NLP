@@ -6,7 +6,7 @@ import torch
 import math
 import sys
 import time
-import mysql.connector
+import datetime
 
 from torch import nn
 from transformers import RobertaConfig
@@ -26,6 +26,8 @@ from carbontracker import parser
 
 from hyperopt import fmin, tpe, hp, space_eval
 from hyperopt.mongoexp import MongoTrials
+
+from pymongo import MongoClient
 
 ###########################################################################################
 # Hyperopt sucks at subpackages, so we need to package callbacks and models into one file #
@@ -130,12 +132,11 @@ filename = dt_string + "_" + "opt_log.txt"
 # dataset = get_dataset('cc_news')
 dataset = get_dataset_from_disk('/cc_news_reduced.txt')
 
-mydb = mysql.connector.connect(
-  host="mydb.itu.dk",
-  user="hyperuser",
-  password="hyperpassword",
-  database="hyperopt"
-)
+client = MongoClient('mongo://root:pass123@135.181.38.74:27017/')
+db = client['admin']
+collection = db['params']
+
+
 
 def objective(params):
     """
@@ -203,13 +204,16 @@ def objective(params):
         print(f'Energy Loss: {energy_loss}')
         print('##################################')
         
-        mycursor = mydb.cursor()
-        sql = '''INSERT INTO params (vocab_size,hidden_size,num_hidden_layers,num_attention_heads,intermediate_size,hidden_act,hidden_dropout_prob,attention_probs_dropout_prog,position_embedding_type,energy_consumption,perplexity,energy_loss,loss)
-                VALUES (%i, %i, %i, %i, %i, %s, %d, %d, %s, %d, %d, %d, %d);'''
-        val = (params['vocab_size'], params['hidden_size'], params['num_hidden_layers'], params['num_attention_heads'], params['intermediate_size'], params['hidden_act'], params['hidden_dropout_prob'], params['attention_probs_dropout_prog'], params['position_embedding_type'], energy_consumption, perplexity, energy_loss, loss)
 
-        mycursor.execute(sql, val)
-        print("1 record inserted, ID:", mycursor.lastrowid)
+        post = params.copy()
+        post['loss'] = loss
+        post['perplexity'] = perplexity
+        post['energy_consumption'] = energy_consumption
+        post['energy_loss'] = energy_loss
+        post['date'] = datetime.datetime.uctnow()
+
+        post_id = collection.insert_one(post).inserted_id
+        print("Posted with ID:", post_id)
 
         trainer.save_model('trained_model')
         
