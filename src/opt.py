@@ -6,16 +6,14 @@ import torch
 import math
 import sys
 import time
+import csv
 import datetime
 
 from torch import nn
 from transformers import RobertaConfig
 from transformers import RobertaForMaskedLM
-
 from transformers import TrainerCallback, Trainer, TrainingArguments, TrainerState, TrainerControl
 from carbontracker.tracker import CarbonTracker
-
-from datetime import datetime
 from transformers import EvalPrediction
 from transformers import Trainer, TrainingArguments
 from transformers import RobertaTokenizerFast
@@ -26,8 +24,6 @@ from carbontracker import parser
 
 from hyperopt import fmin, tpe, hp, space_eval
 from hyperopt.mongoexp import MongoTrials
-
-from pymongo import MongoClient
 
 ###########################################################################################
 # Hyperopt sucks at subpackages, so we need to package callbacks and models into one file #
@@ -132,12 +128,8 @@ filename = dt_string + "_" + "opt_log.txt"
 # dataset = get_dataset('cc_news')
 dataset = get_dataset_from_disk('/cc_news_reduced.txt')
 
-client = MongoClient('mongo://root:pass123@135.181.38.74:27017/')
-db = client['admin']
-collection = db['params']
-
-
-
+csv_name = sys.argv[1] + '.csv'
+csv_columns = ["vocab_size","hidden_size","num_hidden_layers","num_attention_heads","intermediate_size","hidden_act","hidden_dropout_prob","attention_probs_dropout_prog", "max_position_embeddings", "type_vocab_size", "initializer_range", "layer_norm_eps", "gradient_checkpointing","position_embedding_type","use_cache","energy_consumption","perplexity","energy_loss","loss","date"]
 def objective(params):
     """
     Function to set up the model and train it.
@@ -211,10 +203,11 @@ def objective(params):
         post['energy_consumption'] = energy_consumption
         post['energy_loss'] = energy_loss
         post['date'] = datetime.datetime.uctnow()
-
-        post_id = collection.insert_one(post).inserted_id
-        print("Posted with ID:", post_id)
-
+        
+        with open(csv_name, 'a+') as result_file:
+            writer = csv.DictWriter(result_file, fieldnames=csv_columns)
+            writer.writerow(post)
+        
         trainer.save_model('trained_model')
         
         with open(results_path + '/' + filename, 'a+') as log_file:
