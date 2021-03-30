@@ -202,7 +202,7 @@ def objective(params):
         post['perplexity'] = perplexity
         post['energy_consumption'] = energy_consumption
         post['energy_loss'] = energy_loss
-        post['date'] = datetime.datetime.uctnow()
+        post['date'] = datetime.datetime.utcnow()
         
         with open(csv_name, 'a+') as result_file:
             writer = csv.DictWriter(result_file, fieldnames=csv_columns)
