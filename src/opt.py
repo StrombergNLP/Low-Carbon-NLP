@@ -5,6 +5,8 @@ import transformers
 import torch
 import math
 import sys
+import time
+import mysql.connector
 
 from torch import nn
 from transformers import RobertaConfig
@@ -128,6 +130,13 @@ filename = dt_string + "_" + "opt_log.txt"
 # dataset = get_dataset('cc_news')
 dataset = get_dataset_from_disk('/cc_news_reduced.txt')
 
+mydb = mysql.connector.connect(
+  host="mydb.itu.dk",
+  user="hyperuser",
+  password="hyperpassword",
+  database="hyperopt"
+)
+
 def objective(params):
     """
     Function to set up the model and train it.
@@ -181,6 +190,7 @@ def objective(params):
         perplexity = math.exp(loss)
 
         # This is v erry cringe code
+        time.sleep(60)
         logs = parser.parse_all_logs(log_dir=carbondir_path)
         latest_log = logs[len(logs)-1]
         energy_consumption = latest_log['actual']['energy (kWh)']
@@ -193,6 +203,13 @@ def objective(params):
         print(f'Energy Loss: {energy_loss}')
         print('##################################')
         
+        mycursor = mydb.cursor()
+        sql = '''INSERT INTO params (vocab_size,hidden_size,num_hidden_layers,num_attention_heads,intermediate_size,hidden_act,hidden_dropout_prob,attention_probs_dropout_prog,position_embedding_type,energy_consumption,perplexity,energy_loss,loss)
+                VALUES (%i, %i, %i, %i, %i, %s, %d, %d, %s, %d, %d, %d, %d);'''
+        val = (params['vocab_size'], params['hidden_size'], params['num_hidden_layers'], params['num_attention_heads'], params['intermediate_size'], params['hidden_act'], params['hidden_dropout_prob'], params['attention_probs_dropout_prog'], params['position_embedding_type'], energy_consumption, perplexity, energy_loss, loss)
+
+        mycursor.execute(sql, val)
+        print("1 record inserted, ID:", mycursor.lastrowid)
 
         trainer.save_model('trained_model')
         
