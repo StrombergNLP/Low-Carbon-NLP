@@ -121,7 +121,7 @@ transformers.logging.set_verbosity_info()
 
 config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'config'))
 results_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'results'))
-now = datetime.now()
+now = datetime.datetime.now()
 dt_string = now.strftime('%Y-%d-%m_T%H-%M-%S')
 filename = dt_string + "_" + "opt_log.txt"
 
