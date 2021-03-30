@@ -115,7 +115,7 @@ def get_dataset(dataset_name):
 def get_dataset_from_disk(dataset_name):
     data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
     dataset = load_dataset('text', data_files=data_path + dataset_name)
-    return dataset['train']['text'][:100000]
+    return dataset['train']['text'][:2000]
 
 
 torch.cuda.device(1)

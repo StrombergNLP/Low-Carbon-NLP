@@ -10,7 +10,7 @@
 #SBATCH --partition=red		       # Run on either the Red or Brown queue
 
 module load Python/3.7.4-GCCcore-8.3.0
-pip3 install --user datasets transformers carbontracker deepspeed hyperopt
+pip3 install --user datasets transformers carbontracker deepspeed hyperopt mysql
 pip3 install --user torch torchvision pymongo
 
 nohup python3 opt.py $SLURM_JOB_ID &
