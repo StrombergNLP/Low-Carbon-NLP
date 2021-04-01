@@ -187,6 +187,7 @@ def objective(params):
         print(f"Carbonpath log directory: {carbondir_path}")
         dir_path = os.path.dirname(os.path.realpath(__file__))
         print(f"Current working path: {dir_path}")
+        print(f"CWD: {os.getcwd()}")
         logs = parser.parse_all_logs(log_dir=carbondir_path)
         print(f"Log length: {len(logs)}")
         latest_log = logs[len(logs)-1]
