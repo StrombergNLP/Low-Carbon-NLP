@@ -1,6 +1,5 @@
 #!/bin/bash
 
-#SBATCH --array=0-2                # We array now boi
 #SBATCH --job-name=hyperopt        # Job name
 #SBATCH --output=opt.%j            # Name of output file (%j expands to jobId)
 #SBATCH --cpus-per-task=6          # Schedule one core

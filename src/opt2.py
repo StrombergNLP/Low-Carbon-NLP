@@ -260,7 +260,7 @@ space = {
     'use_cache': True,
 }
 
-trials = MongoTrials('mongo://root:pass123@135.181.38.74:27017/admin/jobs?authSource=admin', exp_key='exp1')
+trials = MongoTrials('mongo://root:pass123@135.181.38.74:27017/admin/jobs?authSource=admin', exp_key='test1')
 best = fmin(objective,
             space=space,
             trials=trials,
