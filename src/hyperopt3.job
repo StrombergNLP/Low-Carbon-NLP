@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=hyperopt        # Job name
-#SBATCH --output=opt.%j            # Name of output file (%j expands to jobId)
+#SBATCH --output=opt3            # Name of output file (%j expands to jobId)
 #SBATCH --cpus-per-task=6          # Schedule one core
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:1               # Schedule a GPU
