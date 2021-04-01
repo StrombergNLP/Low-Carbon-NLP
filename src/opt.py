@@ -193,6 +193,10 @@ def objective(params):
         logs = parser.parse_all_logs(log_dir=carbondir_path)
         print(f"Log length: {len(logs)}")
         latest_log = logs[len(logs)-1]
+        print("LATEST LOG")
+        print(latest_log)
+        print("LATEST LOG ACTUAL")
+        print(latest_log['actual'])
         energy_consumption = latest_log['actual']['energy (kWh)']
         
         energy_loss = perplexity * energy_consumption
