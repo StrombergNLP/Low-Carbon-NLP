@@ -1,0 +1,23 @@
+#!/bin/bash
+
+#SBATCH --array=0-2                # We array now boi
+#SBATCH --job-name=hyperopt        # Job name
+#SBATCH --output=opt.%j            # Name of output file (%j expands to jobId)
+#SBATCH --cpus-per-task=6          # Schedule one core
+#SBATCH --mem=64G
+#SBATCH --gres=gpu:1               # Schedule a GPU
+#SBATCH --time=3-00:00:00          # Run time (hh:mm:ss) - run for one hour max
+#SBATCH --partition=red		       # Run on either the Red or Brown queue
+
+module load Python/3.7.4-GCCcore-8.3.0
+pip3 install --user datasets transformers carbontracker deepspeed hyperopt
+pip3 install --user torch torchvision pymongo
+
+nohup python3 opt3.py &
+
+hyperopt-mongo-worker \
+    --mongo=root:pass123@135.181.38.74:27017/admin \
+    --max-jobs=100 \
+    --poll-interval=30 \
+    --reserve-timeout=258000 \
+    --workdir="."
