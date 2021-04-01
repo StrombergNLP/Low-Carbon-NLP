@@ -30,14 +30,10 @@ from hyperopt.mongoexp import MongoTrials
 # Hyperopt sucks at subpackages, so we need to package callbacks and models into one file #
 ###########################################################################################
 
-uuid_path = str(uuid.uuid4())
-carbondir_path = './carbon_logs_' + uuid_path + '/'
-os.mkdir(carbondir_path)
-
 class CarbonTrackerCallback(TrainerCallback):
-    def __init__(self, max_epochs):
+    def __init__(self, max_epochs, log_path):
         super().__init__()
-        self.tracker = CarbonTracker(epochs=max_epochs, epochs_before_pred=-1, monitor_epochs=-1, verbose=2, log_dir=carbondir_path)
+        self.tracker = CarbonTracker(epochs=max_epochs, epochs_before_pred=-1, monitor_epochs=-1, verbose=2, log_dir=log_path)
 
     def on_epoch_begin(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
         self.tracker.epoch_start()
@@ -130,13 +126,18 @@ filename = dt_string + "_" + "opt_log.txt"
 # dataset = get_dataset('cc_news')
 dataset = get_dataset_from_disk('/cc_news_reduced.txt')
 
-csv_name = uuid_path + '.csv'
-csv_columns = ["vocab_size","hidden_size","num_hidden_layers","num_attention_heads","intermediate_size","hidden_act","hidden_dropout_prob","attention_probs_dropout_prog", "max_position_embeddings", "type_vocab_size", "initializer_range", "layer_norm_eps", "gradient_checkpointing","position_embedding_type","use_cache","energy_consumption","perplexity","energy_loss","loss","date"]
 def objective(params):
     """
     Function to set up the model and train it.
     Loss function is based on energy consumption times perplexity
     """
+    carbondir_path = './carbon_logs_' + sys.argv[1] + '/'
+    
+    if not os.path.exists(carbondir_path):
+        os.mkdir(carbondir_path)
+
+    csv_name = sys.argv[1] + '.csv'
+    csv_columns = ["vocab_size","hidden_size","num_hidden_layers","num_attention_heads","intermediate_size","hidden_act","hidden_dropout_prob","attention_probs_dropout_prog", "max_position_embeddings", "type_vocab_size", "initializer_range", "layer_norm_eps", "gradient_checkpointing","position_embedding_type","use_cache","energy_consumption","perplexity","energy_loss","loss","date"]
 
     with open(config_path + '/config.json') as json_file:
         random.seed(25565)
@@ -176,7 +177,7 @@ def objective(params):
             train_dataset=inputs['input_ids'],
             eval_dataset=inputs['input_ids'],
             data_collator=data_collator,
-            callbacks=[CarbonTrackerCallback(epochs)],
+            callbacks=[CarbonTrackerCallback(epochs, carbondir_path)],
             optimizers=(optimizer, scheduler)
         )
 
@@ -188,8 +189,6 @@ def objective(params):
         time.sleep(60)
         print(f"Carbonpath log directory: {carbondir_path}")
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        print(f"Current working path: {dir_path}")
-        print(f"CWD: {os.getcwd()}")
         logs = parser.parse_all_logs(log_dir=carbondir_path)
         print(f"Log length: {len(logs)}")
         latest_log = logs[len(logs)-1]
