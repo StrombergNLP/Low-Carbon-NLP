@@ -13,7 +13,7 @@ module load Python/3.7.4-GCCcore-8.3.0
 pip3 install --user datasets transformers carbontracker deepspeed hyperopt
 pip3 install --user torch torchvision pymongo
 
-nohup python3 opt.py $SLURM_JOB_ID &
+nohup python3 opt.py &
 
 hyperopt-mongo-worker \
     --mongo=root:pass123@135.181.38.74:27017/admin \

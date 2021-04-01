@@ -8,6 +8,7 @@ import sys
 import time
 import csv
 import datetime
+import uuid
 
 from torch import nn
 from transformers import RobertaConfig
@@ -29,7 +30,8 @@ from hyperopt.mongoexp import MongoTrials
 # Hyperopt sucks at subpackages, so we need to package callbacks and models into one file #
 ###########################################################################################
 
-carbondir_path = './carbon_logs_' + sys.argv[1] + '/'
+uuid_path = str(uuid.uuid4())
+carbondir_path = './carbon_logs_' + uuid_path + '/'
 os.mkdir(carbondir_path)
 
 class CarbonTrackerCallback(TrainerCallback):
@@ -128,7 +130,7 @@ filename = dt_string + "_" + "opt_log.txt"
 # dataset = get_dataset('cc_news')
 dataset = get_dataset_from_disk('/cc_news_reduced.txt')
 
-csv_name = sys.argv[1] + '.csv'
+csv_name = uuid_path + '.csv'
 csv_columns = ["vocab_size","hidden_size","num_hidden_layers","num_attention_heads","intermediate_size","hidden_act","hidden_dropout_prob","attention_probs_dropout_prog", "max_position_embeddings", "type_vocab_size", "initializer_range", "layer_norm_eps", "gradient_checkpointing","position_embedding_type","use_cache","energy_consumption","perplexity","energy_loss","loss","date"]
 def objective(params):
     """
