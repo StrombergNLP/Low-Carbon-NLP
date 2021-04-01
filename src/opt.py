@@ -111,7 +111,7 @@ def get_dataset(dataset_name):
 def get_dataset_from_disk(dataset_name):
     data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
     dataset = load_dataset('text', data_files=data_path + dataset_name)
-    return dataset['train']['text'][:2000]
+    return dataset['train']['text']
 
 
 torch.cuda.device(1)
@@ -262,7 +262,7 @@ space = {
     'use_cache': True,
 }
 
-trials = MongoTrials('mongo://root:pass123@135.181.38.74:27017/admin/jobs?authSource=admin', exp_key='test2')
+trials = MongoTrials('mongo://root:pass123@135.181.38.74:27017/admin/jobs?authSource=admin', exp_key='experiment_1')
 best = fmin(objective,
             space=space,
             trials=trials,
