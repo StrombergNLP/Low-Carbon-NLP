@@ -126,18 +126,21 @@ filename = dt_string + "_" + "opt_log.txt"
 # dataset = get_dataset('cc_news')
 dataset = get_dataset_from_disk('/cc_news_reduced.txt')
 
+
 def objective(params):
     """
     Function to set up the model and train it.
     Loss function is based on energy consumption times perplexity
     """
-    carbondir_path = './carbon_logs_' + sys.argv[1] + '/'
+
+    uuid_name = str(uuid.uuid4())
+    csv_name =  'param_results_' + uuid_name + '.csv'
+    csv_columns = ["vocab_size","hidden_size","num_hidden_layers","num_attention_heads","intermediate_size","hidden_act","hidden_dropout_prob","attention_probs_dropout_prog", "max_position_embeddings", "type_vocab_size", "initializer_range", "layer_norm_eps", "gradient_checkpointing","position_embedding_type","use_cache","energy_consumption","perplexity","energy_loss","loss","date"]
+    carbondir_path = './carbon_logs/' + 'carbon_log' + uuid_name + '/'
     
     if not os.path.exists(carbondir_path):
         os.mkdir(carbondir_path)
 
-    csv_name = sys.argv[1] + '.csv'
-    csv_columns = ["vocab_size","hidden_size","num_hidden_layers","num_attention_heads","intermediate_size","hidden_act","hidden_dropout_prob","attention_probs_dropout_prog", "max_position_embeddings", "type_vocab_size", "initializer_range", "layer_norm_eps", "gradient_checkpointing","position_embedding_type","use_cache","energy_consumption","perplexity","energy_loss","loss","date"]
 
     with open(config_path + '/config.json') as json_file:
         random.seed(25565)
@@ -186,7 +189,6 @@ def objective(params):
         perplexity = math.exp(loss)
 
         # This is v erry cringe code
-        time.sleep(60)
         print(f"Carbonpath log directory: {carbondir_path}")
         dir_path = os.path.dirname(os.path.realpath(__file__))
         logs = parser.parse_all_logs(log_dir=carbondir_path)
@@ -214,7 +216,7 @@ def objective(params):
         post['energy_loss'] = energy_loss
         post['date'] = datetime.datetime.utcnow()
         
-        with open(csv_name, 'a+') as result_file:
+        with open(results_path + '/' + csv_name, 'a+') as result_file:
             writer = csv.DictWriter(result_file, fieldnames=csv_columns)
             writer.writerow(post)
         
@@ -260,7 +262,7 @@ space = {
     'use_cache': True,
 }
 
-trials = MongoTrials('mongo://root:pass123@135.181.38.74:27017/admin/jobs?authSource=admin', exp_key='exp1')
+trials = MongoTrials('mongo://root:pass123@135.181.38.74:27017/admin/jobs?authSource=admin', exp_key='test2')
 best = fmin(objective,
             space=space,
             trials=trials,
