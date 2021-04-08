@@ -24,10 +24,7 @@ def identify_pareto(scores):
     return population_ids[pareto_front]
 
 
-if __name__ == '__main__':
-    data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
-    df = read_data(data_path + '/model_data.csv')
-
+def plot_pareto_graph(data_frame):
     x = df['perplexity'].tolist()
     y = df['energy_consumption'].tolist()
     scores = np.array(list(zip(x, y)))
@@ -42,9 +39,27 @@ if __name__ == '__main__':
     y_pareto = pareto_front[:, 1]
 
     sns.set_theme()
-    sns.scatterplot(data=df, x='perplexity', y='energy_consumption', hue='vocab_size')
+    sns.scatterplot(data=df, x='perplexity', y='energy_consumption', hue='position_embedding_type')
     sns.lineplot(x=x_pareto, y=y_pareto)
     plt.xlabel('Perplexity (lower is better)')
     plt.ylabel('Energy Consumption (kWh)')
     plt.show()
+
+
+def plot_correlation_heatmap(df):
+    df = df.drop(['max_position_embeddings', 'type_vocab_size', 'initializer_range', 'layer_norm_eps', 'gradient_checkpointing', 'use_cache', 'energy_loss', 'loss', 'id'], axis=1)
+    correlation_matrix = df.corr()
+
+    cmap = sns.diverging_palette(220, 20, as_cmap=True)
+
+    sns.heatmap(correlation_matrix, center=0.0, cmap=cmap)
+    plt.show()
+
+
+if __name__ == '__main__':
+    data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
+    df = read_data(data_path + '/model_data.csv')
+
+    plot_correlation_heatmap(df)
+    # plot_pareto_graph(df)
 
