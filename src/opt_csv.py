@@ -145,6 +145,7 @@ if __name__ == '__main__':
 
     params_file = params_path + '/' + sys.argv[2] + '.csv'
     df = pd.read_csv(params_file, index_col=0)
+    df.drop(['energy_consumption', 'perplexity', 'energy_loss', 'loss', 'date'])
 
     models = df.transpose().to_dict()
 
