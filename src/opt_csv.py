@@ -154,6 +154,5 @@ if __name__ == '__main__':
 
     for model in models:
         params = models[model]
-        print(params)
-        # main(params, dataset, config_path, results_path)
+        main(params, dataset, config_path, results_path)
 
