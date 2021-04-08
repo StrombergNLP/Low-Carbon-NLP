@@ -137,13 +137,14 @@ if __name__ == '__main__':
 
     config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'config'))
     results_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'results'))
+    params_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
     now = datetime.datetime.now()
 
     # dataset = get_dataset('cc_news')
     dataset = get_dataset_from_disk('/cc_news_reduced.txt')
 
-    path = os.path.dirname(__file__) + '/test.csv'
-    df = pd.read_csv(path, index_col=0)
+    params_file = params_path + '/' + sys.argv[2] + '.csv'
+    df = pd.read_csv(params_file, index_col=0)
 
     models = df.transpose().to_dict()
 
