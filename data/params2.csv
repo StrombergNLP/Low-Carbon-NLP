@@ -1,4 +1,4 @@
-﻿,vocab_size,hidden_size,num_hidden_layers,num_attention_heads,intermediate_size,hidden_act,hidden_dropout_prob,attention_probs_dropout_prog,max_position_embeddings,type_vocab_size,initializer_range,layer_norm_eps,gradient_checkpointing,position_embedding_type,use_cache,energy_consumption,perplexity,energy_loss,loss,date
+﻿id,vocab_size,hidden_size,num_hidden_layers,num_attention_heads,intermediate_size,hidden_act,hidden_dropout_prob,attention_probs_dropout_prog,max_position_embeddings,type_vocab_size,initializer_range,layer_norm_eps,gradient_checkpointing,position_embedding_type,use_cache,energy_consumption,perplexity,energy_loss,loss,date
 40,29363,9,2,18,92,relu,0.535446032,0.954221269,512,1,0.02,1.00E-12,FALSE,relative_key_query,TRUE,0.406397,521.1051844,211.7755836,6.255951911,01:05.7
 41,25696,85,1,4,468,silu,0.180710028,0.191894896,512,1,0.02,1.00E-12,FALSE,relative_key_query,TRUE,0.526631,750.0413755,394.9950396,6.620128372,00:22.4
 42,8346,64,3,4,1033,gelu,0.518839512,0.638147722,512,1,0.02,1.00E-12,FALSE,relative_key,TRUE,0.551228,2242.007389,1235.857249,7.715126899,40:35.1

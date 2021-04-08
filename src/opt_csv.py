@@ -10,6 +10,8 @@ import csv
 import datetime
 import uuid
 
+import pandas as pd
+
 from torch import nn
 from transformers import RobertaConfig
 from transformers import RobertaForMaskedLM
@@ -145,7 +147,7 @@ if __name__ == '__main__':
 
     params_file = params_path + '/' + sys.argv[2] + '.csv'
     df = pd.read_csv(params_file, index_col=0)
-    df.drop(['energy_consumption', 'perplexity', 'energy_loss', 'loss', 'date'])
+    df.drop(['id', 'energy_consumption', 'perplexity', 'energy_loss', 'loss', 'date'])
 
     models = df.transpose().to_dict()
 
