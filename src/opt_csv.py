@@ -147,11 +147,13 @@ if __name__ == '__main__':
 
     params_file = params_path + '/' + sys.argv[2] + '.csv'
     df = pd.read_csv(params_file, index_col=0)
-    df.drop(['id', 'energy_consumption', 'perplexity', 'energy_loss', 'loss', 'date'])
+    print(df)
+    df.drop(['energy_consumption', 'perplexity', 'energy_loss', 'loss', 'date'], axis=1)
 
     models = df.transpose().to_dict()
 
     for model in models:
         params = models[model]
-        main(params, dataset, config_path, results_path)
+        print(params)
+        # main(params, dataset, config_path, results_path)
 
