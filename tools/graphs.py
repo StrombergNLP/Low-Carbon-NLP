@@ -24,7 +24,7 @@ def identify_pareto(scores):
     return population_ids[pareto_front]
 
 
-def plot_pareto_graph(data_frame):
+def plot_pareto_graph(df):
     x = df['perplexity'].tolist()
     y = df['energy_consumption'].tolist()
     scores = np.array(list(zip(x, y)))
@@ -35,30 +35,65 @@ def plot_pareto_graph(data_frame):
     pareto_front_df.sort_values(0, inplace=True)
     pareto_front = pareto_front_df.values
 
+    pareto_frame = df.iloc[pareto]
+    print(pareto_frame)
+
     x_pareto = pareto_front[:, 0]
     y_pareto = pareto_front[:, 1]
 
     sns.set_theme()
-    sns.scatterplot(data=df, x='perplexity', y='energy_consumption', hue='position_embedding_type')
-    sns.lineplot(x=x_pareto, y=y_pareto)
+    sns.scatterplot(data=df, x='perplexity', y='energy_consumption', hue='num_attention_heads')
+    sns.lineplot(x=x_pareto, y=y_pareto, drawstyle='steps-pre')
     plt.xlabel('Perplexity (lower is better)')
     plt.ylabel('Energy Consumption (kWh)')
-    plt.show()
+    # plt.show()
+
+
+def correlation_ratio(categories, measurements):
+    '''
+    Blatantly stolen from this article:
+    https://towardsdatascience.com/the-search-for-categorical-correlation-a1cf7f1888c9
+    '''
+    fcat, _ = pd.factorize(categories)
+    cat_num = np.max(fcat) + 1
+    y_avg_array = np.zeros(cat_num)
+    n_array = np.zeros(cat_num)
+
+    for i in range(0, cat_num):
+        cat_measures = measurements[np.argwhere(fcat == i).flatten()]
+        n_array[i] = len(cat_measures)
+        y_avg_array[i] = np.average(cat_measures)
+
+    y_total_avg = np.sum(np.multiply(y_avg_array, n_array)) / np.sum(n_array)
+    numerator = np.sum(np.multiply(n_array, np.power(np.subtract(y_avg_array, y_total_avg), 2)))
+    denominator = np.sum(np.power(np.subtract(measurements, y_total_avg), 2))
+
+    if numerator == 0:
+        eta = 0.0
+    else:
+        eta = np.sqrt(numerator/denominator)
+
+    return eta
 
 
 def plot_correlation_heatmap(df):
     df = df.drop(['max_position_embeddings', 'type_vocab_size', 'initializer_range', 'layer_norm_eps', 'gradient_checkpointing', 'use_cache', 'energy_loss', 'loss', 'id'], axis=1)
-    correlation_matrix = df.corr()
+    df['hidden_act'] = df['hidden_act'].astype('category').cat.codes
+    df['position_embedding_type'] = df['position_embedding_type'].astype('category').cat.codes
+
+    
+
+    # the .loc takes everything from the start to the given parameter as y axis, and then everything from the given parameter to the last one as x
+    correlation_matrix = df.corr().loc[:'position_embedding_type', 'energy_consumption':]
 
     cmap = sns.diverging_palette(220, 20, as_cmap=True)
-
-    sns.heatmap(correlation_matrix, center=0.0, cmap=cmap)
-    plt.show()
+    sns.heatmap(correlation_matrix, center=0.0, cmap=cmap, annot=True)
+    # plt.show()
 
 
 if __name__ == '__main__':
-    data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
-    df = read_data(data_path + '/model_data.csv')
+    data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'results'))
+    df = read_data(data_path + '/model_data_1epoch.csv')
 
     plot_correlation_heatmap(df)
     # plot_pareto_graph(df)
