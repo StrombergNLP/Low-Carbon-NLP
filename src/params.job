@@ -12,4 +12,4 @@ module load Python/3.7.4-GCCcore-8.3.0
 pip3 install --user datasets transformers carbontracker deepspeed
 pip3 install --user torch torchvision pymongo
 
-python3 opt_csv.py $SLURM_JOB_ID params1
+python3 opt_csv.py $SLURM_JOB_ID $1
