@@ -2,7 +2,7 @@
     "model_name": "roberta-base",
     "dataset": "cc_news",
     "train_epochs": 10,
-    "batch_size": 2,
+    "batch_size": 8,
 
     "model_parameters": [{
         "vocab_size": 30522,

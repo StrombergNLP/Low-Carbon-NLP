@@ -12,4 +12,5 @@ module load Python/3.7.4-GCCcore-8.3.0
 pip3 install --user datasets transformers carbontracker deepspeed
 pip3 install --user torch torchvision pymongo
 
-python3 opt_csv.py $SLURM_JOB_ID $1
+
+deepspeed --num_gpus=2 src/experiment.py $SLURM_JOB_ID $1 --deepspeed ds_config.json

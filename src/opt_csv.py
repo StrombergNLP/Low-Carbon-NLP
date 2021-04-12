@@ -45,7 +45,7 @@ def get_dataset_from_disk(dataset_name):
 def main(params, dataset, config_path, results_path):
     csv_name =  'param_results_' + sys.argv[1] + '.csv'
     csv_columns = ["vocab_size","hidden_size","num_hidden_layers","num_attention_heads","intermediate_size","hidden_act","hidden_dropout_prob","attention_probs_dropout_prog", "max_position_embeddings", "type_vocab_size", "initializer_range", "layer_norm_eps", "gradient_checkpointing","position_embedding_type","use_cache","energy_consumption","perplexity","energy_loss","loss","date"]
-    carbondir_path = './carbon_logs/' + 'carbon_log_id_' + params['id'] + '/'
+    carbondir_path = './carbon_logs/' + 'carbon_log_id_' + str(params['id']) + '/'
     
     if not os.path.exists(carbondir_path):
         os.mkdir(carbondir_path)
@@ -156,5 +156,5 @@ if __name__ == '__main__':
 
     for model in models:
         params = models[model]
-        # main(params, dataset, config_path, results_path)
+        main(params, dataset, config_path, results_path)
 
