@@ -36,17 +36,16 @@ def plot_pareto_graph(df):
     pareto_front = pareto_front_df.values
 
     pareto_frame = df.iloc[pareto]
-    print(pareto_frame)
 
     x_pareto = pareto_front[:, 0]
     y_pareto = pareto_front[:, 1]
 
     sns.set_theme()
-    sns.scatterplot(data=df, x='perplexity', y='energy_consumption', hue='num_attention_heads')
+    sns.scatterplot(data=df, x='perplexity', y='energy_consumption', hue='hidden_dropout_prob')
     sns.lineplot(x=x_pareto, y=y_pareto, drawstyle='steps-pre')
     plt.xlabel('Perplexity (lower is better)')
     plt.ylabel('Energy Consumption (kWh)')
-    # plt.show()
+    plt.show()
 
 
 def correlation_ratio(categories, measurements):
@@ -81,19 +80,32 @@ def plot_correlation_heatmap(df):
     df['hidden_act'] = df['hidden_act'].astype('category').cat.codes
     df['position_embedding_type'] = df['position_embedding_type'].astype('category').cat.codes
 
-    
+    # calculate correlation between categorical entries and perplexity/energy
+    activation = df['hidden_act']
+    embedding_type = df['position_embedding_type']
+    perplexity = df['perplexity']
+    energy_consumption = df['energy_consumption']
+
+    act_perplex = correlation_ratio(activation, perplexity)
+    act_energy = correlation_ratio(activation, energy_consumption)
+    embedding_perplex = correlation_ratio(embedding_type, perplexity)
+    embedding_energy = correlation_ratio(embedding_type, energy_consumption)
 
     # the .loc takes everything from the start to the given parameter as y axis, and then everything from the given parameter to the last one as x
     correlation_matrix = df.corr().loc[:'position_embedding_type', 'energy_consumption':]
+    correlation_matrix['perplexity']['hidden_act'] = act_perplex
+    correlation_matrix['energy_consumption']['hidden_act'] = act_energy
+    correlation_matrix['perplexity']['position_embedding_type'] = embedding_perplex
+    correlation_matrix['energy_consumption']['position_embedding_type'] = embedding_energy
 
     cmap = sns.diverging_palette(220, 20, as_cmap=True)
     sns.heatmap(correlation_matrix, center=0.0, cmap=cmap, annot=True)
-    # plt.show()
+    plt.show()
 
 
 if __name__ == '__main__':
     data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'results'))
-    df = read_data(data_path + '/model_data_1epoch.csv')
+    df = read_data(data_path + '/model_data_3epochs.csv')
 
     plot_correlation_heatmap(df)
     # plot_pareto_graph(df)

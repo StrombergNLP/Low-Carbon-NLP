@@ -8,7 +8,6 @@ import sys
 import time
 import csv
 import datetime
-import uuid
 
 import pandas as pd
 
@@ -44,10 +43,9 @@ def get_dataset_from_disk(dataset_name):
 
 
 def main(params, dataset, config_path, results_path):
-    uuid_name = str(uuid.uuid4())
     csv_name =  'param_results_' + sys.argv[1] + '.csv'
     csv_columns = ["vocab_size","hidden_size","num_hidden_layers","num_attention_heads","intermediate_size","hidden_act","hidden_dropout_prob","attention_probs_dropout_prog", "max_position_embeddings", "type_vocab_size", "initializer_range", "layer_norm_eps", "gradient_checkpointing","position_embedding_type","use_cache","energy_consumption","perplexity","energy_loss","loss","date"]
-    carbondir_path = './carbon_logs/' + 'carbon_log' + uuid_name + '/'
+    carbondir_path = './carbon_logs/' + 'carbon_log_id_' + params['id'] + '/'
     
     if not os.path.exists(carbondir_path):
         os.mkdir(carbondir_path)
@@ -110,6 +108,7 @@ def main(params, dataset, config_path, results_path):
         print("LATEST LOG ACTUAL")
         print(latest_log['actual'])
         energy_consumption = latest_log['actual']['energy (kWh)']
+        time = latest_log['actual']['time']
         
         energy_loss = perplexity * energy_consumption
         
@@ -117,6 +116,7 @@ def main(params, dataset, config_path, results_path):
         print(f'Energy Consumption: {energy_consumption}')
         print(f'Perplexity: {perplexity}')
         print(f'Energy Loss: {energy_loss}')
+        print(f'Time: {time}')
         print('##################################')
         
 
@@ -126,10 +126,13 @@ def main(params, dataset, config_path, results_path):
         post['energy_consumption'] = energy_consumption
         post['energy_loss'] = energy_loss
         post['date'] = datetime.datetime.utcnow()
+        post['time'] = time
         
         with open(results_path + '/' + csv_name, 'a+') as result_file:
             writer = csv.DictWriter(result_file, fieldnames=csv_columns)
             writer.writerow(post)
+
+        trainer.save_model('model_3epochs_id_' + params['id'])
         
 
 
@@ -146,13 +149,12 @@ if __name__ == '__main__':
     dataset = get_dataset_from_disk('/cc_news_reduced.txt')
 
     params_file = params_path + '/' + sys.argv[2] + '.csv'
-    df = pd.read_csv(params_file, index_col=0)
-    print(df)
-    df.drop(['energy_consumption', 'perplexity', 'energy_loss', 'loss', 'date'], axis=1)
+    df = pd.read_csv(params_file)
+    # df.drop(['energy_consumption', 'perplexity', 'energy_loss', 'loss', 'date'], axis=1)
 
     models = df.transpose().to_dict()
 
     for model in models:
         params = models[model]
-        main(params, dataset, config_path, results_path)
+        # main(params, dataset, config_path, results_path)
 
