@@ -43,7 +43,7 @@ class CarbonTrackerCallback(TrainerCallback):
         latest_log = logs[len(logs) - 1]
         self.energy_consumption.append(latest_log['actual']['energy (kWh)'])
         loss = state.log_history[len(state.log_history) - 1]['loss']
-        self.perplexity.append(math.exp(loss))
+        self.perplexity.append(loss)
 
 
     def on_train_end(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
