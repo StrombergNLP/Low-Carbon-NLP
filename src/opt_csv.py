@@ -24,6 +24,7 @@ from transformers import AdamW
 from transformers import PrinterCallback, DefaultFlowCallback
 from datasets import load_dataset
 from carbontracker import parser
+from timeit import default_timer as timer
 from model.RoBERTaModel import RoBERTaModel
 from callbacks.CarbonTrackerCallback import CarbonTrackerCallback
 
@@ -100,10 +101,10 @@ def main(params, dataset, config_path, results_path):
             optimizers=(optimizer, scheduler)
         )
 
-        start = time.time()
+        start = timer()
         train_metrics = trainer.train()
-        end = time.time()
-        time = end - start
+        end = timer()
+        time_spent = end - start
         _, loss, metrics = train_metrics
         perplexity = math.exp(loss)
 
@@ -125,7 +126,7 @@ def main(params, dataset, config_path, results_path):
         print(f'Energy Consumption: {energy_consumption}')
         print(f'Perplexity: {perplexity}')
         print(f'Energy Loss: {energy_loss}')
-        print(f'Time: {time}')
+        print(f'Time: {time_spent}')
         print('##################################')
         
 
