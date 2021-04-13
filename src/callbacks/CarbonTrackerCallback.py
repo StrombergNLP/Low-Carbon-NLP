@@ -55,6 +55,12 @@ class CarbonTrackerCallback(TrainerCallback):
             consumption = sum(self.energy_consumption[:i])
             per_epoch_consumptions[i] = consumption
 
+        print('###############')
+        print('DICT')
+        print(f'{per_epoch_consumptions}')
+        print('EPOCHS')
+        print(f'{epochs}')
+        print('###############')
 
         with open(self.results_path + '/' + self.params_file_name + '_energy_per_epoch.csv', 'a+') as result_file:
             writer = csv.DictWriter(result_file, fieldnames=csv_columns)
