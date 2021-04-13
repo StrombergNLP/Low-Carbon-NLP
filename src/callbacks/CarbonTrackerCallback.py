@@ -28,7 +28,7 @@ class CarbonTrackerCallback(TrainerCallback):
         self.results_path = results_path
         self.params_file_name = params_file_name
         self.energy_consumption = []
-        self.perplexity = []
+        self.loss = []
 
 
     def on_epoch_begin(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
@@ -43,28 +43,35 @@ class CarbonTrackerCallback(TrainerCallback):
         latest_log = logs[len(logs) - 1]
         self.energy_consumption.append(latest_log['actual']['energy (kWh)'])
         loss = state.log_history[len(state.log_history) - 1]['loss']
-        self.perplexity.append(loss)
+        self.loss.append(loss)
 
 
     def on_train_end(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
         epochs = list(range(1, self.max_epochs + 1))
         csv_columns = list(map(str, epochs))
+        csv_columns.insert(0, 'id')
 
-        per_epoch_consumptions = {}
+        per_epoch_perplexity = {'id': self.model_id}
+        per_epoch_consumptions = {'id': self.model_id}
         for i in epochs:
             consumption = sum(self.energy_consumption[:i])
             per_epoch_consumptions[str(i)] = consumption
+            per_epoch_perplexity[str(i)] = math.exp(self.loss[i-1])
 
-        print('###############')
-        print('ENERGY DICT')
-        print(f'{per_epoch_consumptions}')
-        print('PERPLEXITY')
-        print(f'{self.perplexity}')
-        print('EPOCHS')
-        print(f'{epochs}')
-        print('###############')
+        perplexity_average = math.exp(sum(self.loss)/3)
+        perplexity_final = math.exp(self.loss[-1])
+
+        per_epoch_perplexity.append(perplexity_average)
+        per_epoch_perplexity.append(perplexity_final)
 
         with open(self.results_path + '/' + self.params_file_name + '_energy_per_epoch.csv', 'a+') as result_file:
             writer = csv.DictWriter(result_file, fieldnames=csv_columns)
             writer.writerow(per_epoch_consumptions)
+
+        csv_columns.append('average_loss_perplexity')
+        csv_columns.append('final_perplexity')
+        
+        with open(self.results_path + '/' + self.params_file_name + '_perplexity_per_epoch.csv', 'a+') as result_file:
+            writer = csv.DictWriter(result_file, fieldnames=csv_columns)
+            writer.writerow(per_epoch_perplexity)
 
