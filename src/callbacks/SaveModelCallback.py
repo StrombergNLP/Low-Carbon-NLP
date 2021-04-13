@@ -15,8 +15,8 @@ class SaveModelCallback(TrainerCallback):
         epoch = int(state.epoch)
         save_directory = self.save_path + '/' + 'epoch_' + str(epoch)
 
-        if not os.path.exists(self.save_directory):
-            os.mkdir(self.save_directory)
+        if not os.path.exists(save_directory):
+            os.mkdir(save_directory)
 
-        model.save_pretrained(save_directory=self.save_directory, save_config=True, save_dict=True)
+        model.save_pretrained(save_directory=save_directory, save_config=True, save_dict=True)
 
