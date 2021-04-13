@@ -15,6 +15,6 @@ for i in range(epochs):
     tracker.epoch_end()
     time.sleep(2)
     logs = parser.parse_all_logs(log_dir=log_path)
-    print(logs[len(logs)-1]['actual'])
+    print(logs[len(logs)-1])
 
 tracker.stop()
