@@ -94,7 +94,7 @@ def main(params, dataset, config_path, results_path):
             data_collator=data_collator,
             callbacks=[
                 CarbonTrackerCallback(epochs, carbondir_path, model_id, results_path, params_file_name),
-                DefaultFlowCallback
+                DefaultFlowCallback,
                 PrinterCallback,
             ],
             optimizers=(optimizer, scheduler)
