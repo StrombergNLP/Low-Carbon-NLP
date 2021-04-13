@@ -21,6 +21,7 @@ from transformers import Trainer, TrainingArguments
 from transformers import RobertaTokenizerFast
 from transformers import DataCollatorForLanguageModeling
 from transformers import AdamW
+from transformers import PrinterCallback, DefaultFlowCallback
 from datasets import load_dataset
 from carbontracker import parser
 from model.RoBERTaModel import RoBERTaModel
@@ -39,13 +40,15 @@ def get_dataset(dataset_name):
 def get_dataset_from_disk(dataset_name):
     data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
     dataset = load_dataset('text', data_files=data_path + dataset_name)
-    return dataset['train']['text'][:100000]
+    return dataset['train']['text'][:2000]
 
 
 def main(params, dataset, config_path, results_path):
-    csv_name =  'param_results_' + sys.argv[1+1] + '.csv'
+    model_id = params['id']
+    params_file_name = sys.argv[2]
+    csv_name =  'param_results_' + sys.argv[1] + '.csv'
     csv_columns = ['vocab_size','hidden_size','num_hidden_layers','num_attention_heads','intermediate_size','hidden_act','hidden_dropout_prob','attention_probs_dropout_prog', 'max_position_embeddings', 'type_vocab_size', 'initializer_range', 'layer_norm_eps', 'gradient_checkpointing','position_embedding_type','use_cache','energy_consumption','perplexity','energy_loss','loss','date', 'time']
-    carbondir_path = './carbon_logs/' + 'carbon_log_id_' + str(params['id']) + '/'
+    carbondir_path = './carbon_logs/' + 'carbon_log_id_' + str(model_id) + '/'
     
     if not os.path.exists(carbondir_path):
         os.mkdir(carbondir_path)
@@ -89,7 +92,11 @@ def main(params, dataset, config_path, results_path):
             train_dataset=inputs['input_ids'],
             eval_dataset=inputs['input_ids'],
             data_collator=data_collator,
-            callbacks=[CarbonTrackerCallback(epochs, carbondir_path)],
+            callbacks=[
+                CarbonTrackerCallback(epochs, carbondir_path, model_id, results_path, params_file_name),
+                DefaultFlowCallback
+                PrinterCallback,
+            ],
             optimizers=(optimizer, scheduler)
         )
 
@@ -150,7 +157,7 @@ if __name__ == '__main__':
     # dataset = get_dataset('cc_news')
     dataset = get_dataset_from_disk('/cc_news_reduced.txt')
 
-    params_file = params_path + '/' + sys.argv[2+1] + '.csv'
+    params_file = params_path + '/' + sys.argv[2] + '.csv'
     df = pd.read_csv(params_file)
     df.drop(['energy_consumption', 'perplexity', 'energy_loss', 'loss', 'date'], axis=1)
 
