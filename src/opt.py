@@ -8,7 +8,6 @@ import sys
 import time
 import csv
 import datetime
-import uuid
 
 from torch import nn
 from transformers import RobertaConfig
@@ -30,10 +29,13 @@ from hyperopt.mongoexp import MongoTrials
 # Hyperopt sucks at subpackages, so we need to package callbacks and models into one file #
 ###########################################################################################
 
+carbondir_path = './carbon_logs_' + sys.argv[1] + '/'
+os.mkdir(carbondir_path)
+
 class CarbonTrackerCallback(TrainerCallback):
-    def __init__(self, max_epochs, log_path):
+    def __init__(self, max_epochs):
         super().__init__()
-        self.tracker = CarbonTracker(epochs=max_epochs, epochs_before_pred=-1, monitor_epochs=-1, verbose=2, log_dir=log_path)
+        self.tracker = CarbonTracker(epochs=max_epochs, epochs_before_pred=-1, monitor_epochs=-1, verbose=2, log_dir=carbondir_path)
 
     def on_epoch_begin(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
         self.tracker.epoch_start()
@@ -111,7 +113,7 @@ def get_dataset(dataset_name):
 def get_dataset_from_disk(dataset_name):
     data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
     dataset = load_dataset('text', data_files=data_path + dataset_name)
-    return dataset['train']['text']
+    return dataset['train']['text'][:100000]
 
 
 torch.cuda.device(1)
@@ -126,21 +128,13 @@ filename = dt_string + "_" + "opt_log.txt"
 # dataset = get_dataset('cc_news')
 dataset = get_dataset_from_disk('/cc_news_reduced.txt')
 
-
+csv_name = sys.argv[1] + '.csv'
+csv_columns = ["vocab_size","hidden_size","num_hidden_layers","num_attention_heads","intermediate_size","hidden_act","hidden_dropout_prob","attention_probs_dropout_prog", "max_position_embeddings", "type_vocab_size", "initializer_range", "layer_norm_eps", "gradient_checkpointing","position_embedding_type","use_cache","energy_consumption","perplexity","energy_loss","loss","date"]
 def objective(params):
     """
     Function to set up the model and train it.
     Loss function is based on energy consumption times perplexity
     """
-
-    uuid_name = str(uuid.uuid4())
-    csv_name =  'param_results_' + uuid_name + '.csv'
-    csv_columns = ["vocab_size","hidden_size","num_hidden_layers","num_attention_heads","intermediate_size","hidden_act","hidden_dropout_prob","attention_probs_dropout_prog", "max_position_embeddings", "type_vocab_size", "initializer_range", "layer_norm_eps", "gradient_checkpointing","position_embedding_type","use_cache","energy_consumption","perplexity","energy_loss","loss","date"]
-    carbondir_path = './carbon_logs/' + 'carbon_log' + uuid_name + '/'
-    
-    if not os.path.exists(carbondir_path):
-        os.mkdir(carbondir_path)
-
 
     with open(config_path + '/config.json') as json_file:
         random.seed(25565)
@@ -180,7 +174,7 @@ def objective(params):
             train_dataset=inputs['input_ids'],
             eval_dataset=inputs['input_ids'],
             data_collator=data_collator,
-            callbacks=[CarbonTrackerCallback(epochs, carbondir_path)],
+            callbacks=[CarbonTrackerCallback(epochs)],
             optimizers=(optimizer, scheduler)
         )
 
@@ -189,15 +183,10 @@ def objective(params):
         perplexity = math.exp(loss)
 
         # This is v erry cringe code
-        print(f"Carbonpath log directory: {carbondir_path}")
-        dir_path = os.path.dirname(os.path.realpath(__file__))
+        time.sleep(60)
         logs = parser.parse_all_logs(log_dir=carbondir_path)
-        print(f"Log length: {len(logs)}")
+        print("Log length: ", len(logs))
         latest_log = logs[len(logs)-1]
-        print("LATEST LOG")
-        print(latest_log)
-        print("LATEST LOG ACTUAL")
-        print(latest_log['actual'])
         energy_consumption = latest_log['actual']['energy (kWh)']
         
         energy_loss = perplexity * energy_consumption
@@ -216,7 +205,7 @@ def objective(params):
         post['energy_loss'] = energy_loss
         post['date'] = datetime.datetime.utcnow()
         
-        with open(results_path + '/' + csv_name, 'a+') as result_file:
+        with open(csv_name, 'a+') as result_file:
             writer = csv.DictWriter(result_file, fieldnames=csv_columns)
             writer.writerow(post)
         
@@ -262,7 +251,7 @@ space = {
     'use_cache': True,
 }
 
-trials = MongoTrials('mongo://root:pass123@135.181.38.74:27017/admin/jobs?authSource=admin', exp_key='experiment_1')
+trials = MongoTrials('mongo://root:pass123@135.181.38.74:27017/admin/jobs?authSource=admin', exp_key='exp1')
 best = fmin(objective,
             space=space,
             trials=trials,

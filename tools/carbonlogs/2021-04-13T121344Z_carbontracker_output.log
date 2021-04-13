@@ -1,0 +1,9 @@
+2021-04-13 12:13:44 - CarbonTracker: Traceback (most recent call last):
+  File "C:\Users\Arche\AppData\Local\Programs\Python\Python39\lib\site-packages\carbontracker\tracker.py", line 124, in run
+    self.begin()
+  File "C:\Users\Arche\AppData\Local\Programs\Python\Python39\lib\site-packages\carbontracker\tracker.py", line 138, in begin
+    self._components_remove_unavailable()
+  File "C:\Users\Arche\AppData\Local\Programs\Python\Python39\lib\site-packages\carbontracker\tracker.py", line 200, in _components_remove_unavailable
+    raise exceptions.NoComponentsAvailableError()
+carbontracker.exceptions.NoComponentsAvailableError: No components were available. CarbonTracker supports Intel CPUs with the RAPL interface and NVIDIA GPUs.
+
