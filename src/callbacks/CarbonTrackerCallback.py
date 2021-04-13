@@ -61,16 +61,16 @@ class CarbonTrackerCallback(TrainerCallback):
         perplexity_average = math.exp(sum(self.loss)/3)
         perplexity_final = math.exp(self.loss[-1])
 
-        per_epoch_perplexity.append(perplexity_average)
-        per_epoch_perplexity.append(perplexity_final)
-
         with open(self.results_path + '/' + self.params_file_name + '_energy_per_epoch.csv', 'a+') as result_file:
             writer = csv.DictWriter(result_file, fieldnames=csv_columns)
             writer.writerow(per_epoch_consumptions)
 
         csv_columns.append('average_loss_perplexity')
         csv_columns.append('final_perplexity')
-        
+
+        per_epoch_perplexity['average_loss_perplexity'] = perplexity_average
+        per_epoch_perplexity['final_perplexity'] = perplexity_final
+
         with open(self.results_path + '/' + self.params_file_name + '_perplexity_per_epoch.csv', 'a+') as result_file:
             writer = csv.DictWriter(result_file, fieldnames=csv_columns)
             writer.writerow(per_epoch_perplexity)
