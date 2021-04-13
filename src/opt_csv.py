@@ -142,7 +142,7 @@ def main(params, dataset, config_path, results_path):
             writer = csv.DictWriter(result_file, fieldnames=csv_columns)
             writer.writerow(post)
 
-        trainer.save_model('model_3epochs_id_' + params['id'])
+        # trainer.save_model('model_3epochs_id_' + str(params['id']))
         
 
 
