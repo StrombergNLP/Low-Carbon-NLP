@@ -27,6 +27,7 @@ from carbontracker import parser
 from timeit import default_timer as timer
 from model.RoBERTaModel import RoBERTaModel
 from callbacks.CarbonTrackerCallback import CarbonTrackerCallback
+from callbacks.SaveModelCallback import SaveModelCallback
 
 
 def get_dataset(dataset_name):
@@ -95,8 +96,9 @@ def main(params, dataset, config_path, results_path):
             data_collator=data_collator,
             callbacks=[
                 CarbonTrackerCallback(epochs, carbondir_path, model_id, results_path, params_file_name),
-                DefaultFlowCallback,
-                PrinterCallback,
+                SaveModelCallback(results_path, model_id),
+                DefaultFlowCallback(),
+                PrinterCallback(),
             ],
             optimizers=(optimizer, scheduler)
         )
