@@ -53,7 +53,7 @@ class CarbonTrackerCallback(TrainerCallback):
         per_epoch_consumptions = {}
         for i in epochs:
             consumption = sum(self.energy_consumption[:i])
-            per_epoch_consumptions[i] = consumption
+            per_epoch_consumptions[str(i)] = consumption
 
         print('###############')
         print('DICT')
