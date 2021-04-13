@@ -1,6 +1,6 @@
 from transformers import TrainerCallback, Trainer, TrainingArguments, TrainerState, TrainerControl, PreTrainedModel
 
-class CarbonTrackerCallback(TrainerCallback):
+class SaveModelCallback(TrainerCallback):
     def __init__(self, save_path, model_id):
         super().__init__()
         self.save_path = save_path + '/' + 'models/' + 'model_' + str(model_id)
