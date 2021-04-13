@@ -42,7 +42,7 @@ def get_dataset(dataset_name):
 def get_dataset_from_disk(dataset_name):
     data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
     dataset = load_dataset('text', data_files=data_path + dataset_name)
-    return dataset['train']['text'][:2000]
+    return dataset['train']['text'][:100000]
 
 
 def main(params, dataset, config_path, results_path):
@@ -55,6 +55,10 @@ def main(params, dataset, config_path, results_path):
     if not os.path.exists(carbondir_path):
         os.mkdir(carbondir_path)
 
+    print('#################################')
+    print('THIS IS THE MODEL ID, THIS IS IMPORTANT')
+    print(f'Model ID: {model_id}')
+    print('#################################')
 
     with open(config_path + '/config.json') as json_file:
         random.seed(25565)
