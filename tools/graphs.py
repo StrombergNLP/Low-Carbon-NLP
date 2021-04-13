@@ -25,7 +25,7 @@ def identify_pareto(scores):
 
 
 def plot_pareto_graph(df):
-    x = df['perplexity'].tolist()
+    x = df['num_hidden_layers'].tolist()
     y = df['energy_consumption'].tolist()
     scores = np.array(list(zip(x, y)))
     pareto = identify_pareto(scores)
@@ -41,7 +41,7 @@ def plot_pareto_graph(df):
     y_pareto = pareto_front[:, 1]
 
     sns.set_theme()
-    sns.scatterplot(data=df, x='perplexity', y='energy_consumption', hue='hidden_dropout_prob')
+    sns.scatterplot(data=df, x='num_hidden_layers', y='energy_consumption', hue='perplexity')
     sns.lineplot(x=x_pareto, y=y_pareto, drawstyle='steps-pre')
     plt.xlabel('Perplexity (lower is better)')
     plt.ylabel('Energy Consumption (kWh)')
@@ -107,6 +107,6 @@ if __name__ == '__main__':
     data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'results'))
     df = read_data(data_path + '/model_data_3epochs.csv')
 
-    plot_correlation_heatmap(df)
-    # plot_pareto_graph(df)
+    # plot_correlation_heatmap(df)
+    plot_pareto_graph(df)
 
