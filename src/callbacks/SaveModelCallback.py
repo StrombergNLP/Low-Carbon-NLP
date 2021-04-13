@@ -1,3 +1,5 @@
+import os
+
 from transformers import TrainerCallback, Trainer, TrainingArguments, TrainerState, TrainerControl, PreTrainedModel
 
 class SaveModelCallback(TrainerCallback):
