@@ -51,7 +51,7 @@ class CarbonTrackerCallback(TrainerCallback):
         csv_columns = list(map(str, epochs))
 
         per_epoch_consumptions = {}
-        for i in range(1, self.max_epochs + 1):
+        for i in epochs:
             consumption = sum(self.energy_consumption[:i])
             per_epoch_consumptions[i] = consumption
 
