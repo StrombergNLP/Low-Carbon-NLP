@@ -18,5 +18,9 @@ class SaveModelCallback(TrainerCallback):
         if not os.path.exists(save_directory):
             os.mkdir(save_directory)
 
-        model.save_pretrained(save_directory=save_directory, save_config=True, save_dict=True)
+        print('######################')
+        print('MODEL TYPE')
+        print(type(model))
+        print('######################')
+        model.save_pretrained(save_directory=save_directory)
 
