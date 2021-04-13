@@ -42,7 +42,7 @@ def get_dataset(dataset_name):
 def get_dataset_from_disk(dataset_name):
     data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
     dataset = load_dataset('text', data_files=data_path + dataset_name)
-    return dataset['train']['text']
+    return dataset['train']['text'][:100000]
 
 
 def main(params, dataset, config_path, results_path):
@@ -161,8 +161,8 @@ if __name__ == '__main__':
     params_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
     now = datetime.datetime.now()
 
-    # dataset = get_dataset('cc_news')
-    dataset = get_dataset_from_disk('/cc_news_reduced.txt')
+    dataset = get_dataset('cc_news')
+    # dataset = get_dataset_from_disk('/cc_news_reduced.txt')
 
     params_file = params_path + '/' + sys.argv[2] + '.csv'
     df = pd.read_csv(params_file)
