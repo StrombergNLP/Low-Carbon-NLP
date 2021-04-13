@@ -43,8 +43,8 @@ def get_dataset_from_disk(dataset_name):
 
 
 def main(params, dataset, config_path, results_path):
-    csv_name =  'param_results_' + sys.argv[1] + '.csv'
-    csv_columns = ["vocab_size","hidden_size","num_hidden_layers","num_attention_heads","intermediate_size","hidden_act","hidden_dropout_prob","attention_probs_dropout_prog", "max_position_embeddings", "type_vocab_size", "initializer_range", "layer_norm_eps", "gradient_checkpointing","position_embedding_type","use_cache","energy_consumption","perplexity","energy_loss","loss","date"]
+    csv_name =  'param_results_' + sys.argv[1+1] + '.csv'
+    csv_columns = ['vocab_size','hidden_size','num_hidden_layers','num_attention_heads','intermediate_size','hidden_act','hidden_dropout_prob','attention_probs_dropout_prog', 'max_position_embeddings', 'type_vocab_size', 'initializer_range', 'layer_norm_eps', 'gradient_checkpointing','position_embedding_type','use_cache','energy_consumption','perplexity','energy_loss','loss','date', 'time']
     carbondir_path = './carbon_logs/' + 'carbon_log_id_' + str(params['id']) + '/'
     
     if not os.path.exists(carbondir_path):
@@ -93,22 +93,24 @@ def main(params, dataset, config_path, results_path):
             optimizers=(optimizer, scheduler)
         )
 
+        start = time.time()
         train_metrics = trainer.train()
+        end = time.time()
+        time = end - start
         _, loss, metrics = train_metrics
         perplexity = math.exp(loss)
 
         # This is v erry cringe code
-        print(f"Carbonpath log directory: {carbondir_path}")
+        print(f'Carbonpath log directory: {carbondir_path}')
         dir_path = os.path.dirname(os.path.realpath(__file__))
         logs = parser.parse_all_logs(log_dir=carbondir_path)
-        print(f"Log length: {len(logs)}")
+        print(f'Log length: {len(logs)}')
         latest_log = logs[len(logs)-1]
-        print("LATEST LOG")
+        print('LATEST LOG')
         print(latest_log)
-        print("LATEST LOG ACTUAL")
+        print('LATEST LOG ACTUAL')
         print(latest_log['actual'])
         energy_consumption = latest_log['actual']['energy (kWh)']
-        time = latest_log['actual']['time']
         
         energy_loss = perplexity * energy_consumption
         
@@ -148,9 +150,9 @@ if __name__ == '__main__':
     # dataset = get_dataset('cc_news')
     dataset = get_dataset_from_disk('/cc_news_reduced.txt')
 
-    params_file = params_path + '/' + sys.argv[2] + '.csv'
+    params_file = params_path + '/' + sys.argv[2+1] + '.csv'
     df = pd.read_csv(params_file)
-    # df.drop(['energy_consumption', 'perplexity', 'energy_loss', 'loss', 'date'], axis=1)
+    df.drop(['energy_consumption', 'perplexity', 'energy_loss', 'loss', 'date'], axis=1)
 
     models = df.transpose().to_dict()
 

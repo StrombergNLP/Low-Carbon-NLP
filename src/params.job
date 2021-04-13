@@ -13,4 +13,4 @@ pip3 install --user datasets transformers carbontracker deepspeed
 pip3 install --user torch torchvision pymongo
 
 
-deepspeed --num_gpus=2 src/opt_csv.py $SLURM_JOB_ID $1 --deepspeed ds_config.json
+deepspeed --num_gpus=2 opt_csv.py $SLURM_JOB_ID $1 --deepspeed ds_config.json
