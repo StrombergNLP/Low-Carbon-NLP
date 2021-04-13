@@ -2,6 +2,7 @@ import csv
 
 from transformers import TrainerCallback, Trainer, TrainingArguments, TrainerState, TrainerControl
 from carbontracker.tracker import CarbonTracker
+from carbontracker import parser
 
 # class CarbonTrackerCallback(TrainerCallback):
 #     def __init__(self, max_epochs, log_path):
