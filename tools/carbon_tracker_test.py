@@ -4,7 +4,7 @@ from carbontracker import parser
 from carbontracker.tracker import CarbonTracker
 
 
-epochs = 10
+epochs = 1
 log_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'carbonlogs'))
 tracker = CarbonTracker(epochs=epochs, epochs_before_pred=-1, monitor_epochs=-1, verbose=2, log_dir=log_path)
 
@@ -18,3 +18,4 @@ for i in range(epochs):
     print(logs[len(logs)-1])
 
 tracker.stop()
+
