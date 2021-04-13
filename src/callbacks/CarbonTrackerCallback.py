@@ -1,4 +1,4 @@
-import csv
+import csv, math
 
 from transformers import TrainerCallback, Trainer, TrainingArguments, TrainerState, TrainerControl
 from carbontracker.tracker import CarbonTracker
@@ -28,6 +28,7 @@ class CarbonTrackerCallback(TrainerCallback):
         self.results_path = results_path
         self.params_file_name = params_file_name
         self.energy_consumption = []
+        self.perplexity = []
 
 
     def on_epoch_begin(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
@@ -39,11 +40,10 @@ class CarbonTrackerCallback(TrainerCallback):
         self.tracker.epoch_end()
         self.tracker.stop()
         logs = parser.parse_all_logs(log_dir=self.log_path)
-        latest_log = logs[len(logs)-1]
+        latest_log = logs[len(logs) - 1]
         self.energy_consumption.append(latest_log['actual']['energy (kWh)'])
-        print('###############')
-        print(f'LOG HISTORY: {state.log_history}')
-        print('###############')
+        loss = state.log_history[len(state.log_history) - 1]['loss']
+        self.perplexity.append(math.exp(loss))
 
 
     def on_train_end(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
@@ -56,8 +56,10 @@ class CarbonTrackerCallback(TrainerCallback):
             per_epoch_consumptions[str(i)] = consumption
 
         print('###############')
-        print('DICT')
+        print('ENERGY DICT')
         print(f'{per_epoch_consumptions}')
+        print('PERPLEXITY')
+        print(f'{self.perplexity}')
         print('EPOCHS')
         print(f'{epochs}')
         print('###############')
