@@ -1,6 +1,0 @@
-﻿id,vocab_size,hidden_size,num_hidden_layers,num_attention_heads,intermediate_size,hidden_act,hidden_dropout_prob,attention_probs_dropout_prog,max_position_embeddings,type_vocab_size,initializer_range,layer_norm_eps,gradient_checkpointing,position_embedding_type,use_cache,energy_consumption,perplexity,energy_loss,loss,date
-121,14665,74,7,10,2081,gelu_new,0.340895921,0.417201827,512,1,0.02,1.00E-12,FALSE,relative_key,TRUE,1.770654,2272.467989,4023.754535,7.72862174,13:24.6
-122,26465,10,3,7,536,gelu_new,0.235153699,0.70231397,512,1,0.02,1.00E-12,FALSE,relative_key_query,TRUE,0.385253,476.1647438,183.4438961,6.165763895,57:23.4
-123,20557,69,3,13,866,gelu,0.262743011,0.981660787,512,1,0.02,1.00E-12,FALSE,absolute,TRUE,1.086203,2244.691543,2438.190688,7.716323394,15:06.1
-124,27677,31,1,12,570,gelu,0.509836373,0.478741262,512,1,0.02,1.00E-12,FALSE,absolute,TRUE,0.369099,1284.642845,474.1603895,7.158236017,45:55.6
-125,21317,45,2,5,1648,gelu,0.258993868,0.337838582,512,1,0.02,1.00E-12,FALSE,relative_key_query,TRUE,0.538872,463.8836763,249.9739244,6.139633823,07:04.5

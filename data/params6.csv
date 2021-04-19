@@ -1,8 +1,0 @@
-﻿id,vocab_size,hidden_size,num_hidden_layers,num_attention_heads,intermediate_size,hidden_act,hidden_dropout_prob,attention_probs_dropout_prog,max_position_embeddings,type_vocab_size,initializer_range,layer_norm_eps,gradient_checkpointing,position_embedding_type,use_cache,energy_consumption,perplexity,energy_loss,loss,date
-77,12430,48,2,7,112,relu,0.558846659,0.127579775,512,1,0.02,1.00E-12,FALSE,relative_key_query,TRUE,0.493313,521.5438852,257.2843787,6.256793423,09:32.1
-78,23692,1,2,9,1264,relu,0.880103521,0.309099176,512,1,0.02,1.00E-12,FALSE,relative_key,TRUE,0.271743,2512.756033,682.8238627,7.829135451,54:10.8
-79,16960,32,5,7,1099,relu,0.229187797,0.580599013,512,1,0.02,1.00E-12,FALSE,absolute,TRUE,0.646724,2172.484124,1404.997623,7.683626549,55:59.7
-80,23956,51,3,1,945,relu,0.392555074,0.510007077,512,1,0.02,1.00E-12,FALSE,relative_key_query,TRUE,0.486092,832.0492774,404.4524973,6.723891667,20:42.5
-81,23004,5,1,11,496,relu,0.331225406,0.466098344,512,1,0.02,1.00E-12,FALSE,relative_key_query,TRUE,0.263615,761.5342114,200.7518411,6.635335098,33:15.1
-82,9348,77,7,7,1321,gelu,0.193349264,0.116533454,512,1,0.02,1.00E-12,FALSE,relative_key_query,TRUE,1.624542,2266.015735,3681.237734,7.725778385,08:30.8
-83,20743,50,12,15,657,gelu,0.479930039,0.37829724,512,1,0.02,1.00E-12,FALSE,relative_key_query,TRUE,3.446158,2285.485541,7876.14428,7.734333771,04:04.7
