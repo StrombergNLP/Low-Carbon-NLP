@@ -1,5 +1,2 @@
 ﻿id,vocab_size,hidden_size,num_hidden_layers,num_attention_heads,intermediate_size,hidden_act,hidden_dropout_prob,attention_probs_dropout_prog,max_position_embeddings,type_vocab_size,initializer_range,layer_norm_eps,gradient_checkpointing,position_embedding_type,use_cache,energy_consumption,perplexity,energy_loss,loss,date
-10,18785,20,3,7,198,gelu_new,0.128818607,0.101197983,512,1,0.02,1.00E-12,FALSE,relative_key_query,TRUE,0.624246,297.3367167,185.6112561,5.694865223,03:12.7
-11,29209,51,2,3,979,gelu,0.403991521,0.793115615,512,1,0.02,1.00E-12,FALSE,relative_key_query,TRUE,0.442338,555.2318801,245.6001594,6.319385828,06:31.0
-12,26536,18,1,11,624,relu,0.371738099,0.241068571,512,1,0.02,1.00E-12,FALSE,relative_key_query,TRUE,0.374918,486.2265225,182.2950754,6.186674611,31:45.1
-13,29103,23,4,9,1403,gelu,0.820501196,0.231177173,512,1,0.02,1.00E-12,FALSE,relative_key_query,TRUE,1.022381,2363.602734,2416.502527,7.767942316,11:24.4
+200,30522,768,6,12,3072,gelu,0.1,0.1,512,1,0.02,1.00E-12,FALSE,absolute,TRUE,0.618699,370.4218412,229.1796227,5.914642467,08:37.5
