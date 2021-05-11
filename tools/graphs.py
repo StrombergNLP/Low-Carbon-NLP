@@ -53,7 +53,7 @@ def correlation_ratio(categories, measurements):
     Blatantly stolen from this article:
     https://towardsdatascience.com/the-search-for-categorical-correlation-a1cf7f1888c9
     '''
-    fcat, _ = pd.factorize(categories)
+    fcat, _ = pd.factorize(categories) #ADDED Comment: pandas.factorize() method helps to get the numeric representation of an array by identifying distinct values. 
     cat_num = np.max(fcat) + 1
     y_avg_array = np.zeros(cat_num)
     n_array = np.zeros(cat_num)
