@@ -33,10 +33,11 @@ if __name__ == '__main__':
                 split = full_model_path.split('/')
                 model_id = split[-3]
                 epoch = split[-2]
-                model_dir = os.path.join(*split[:-1])
+                model_dir = '/' + os.path.join(*split[:-1]) # + '/'
                 print(model_dir)
-
-                model = RobertaForMaskedLM.from_pretrained(model_dir)
+                #prøv igen xd
+                config = RobertaConfig.from_pretrained(model_dir)
+                model = RobertaForMaskedLM.from_pretrained(model_dir, config=config)
                 tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
                 vocab = tokenizer.get_vocab()
 
