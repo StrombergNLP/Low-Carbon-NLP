@@ -52,4 +52,5 @@ def plot_corr_matrix(path):
 #plot_corr_matrix('15worst')
 #plot_corr_matrix('15best')
 #plot_corr_matrix('actualbase')
-plot_corr_matrix('energy_without_outliers')
+#plot_corr_matrix('3epochs_outlier')
+plot_corr_matrix('base_without_outliers')
