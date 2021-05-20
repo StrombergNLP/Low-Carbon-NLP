@@ -42,6 +42,11 @@ def prop_norm(df):
 
     return dfnew
 
+def save_df_to_csv(df, name):
+    data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'results'))
+    save_path = data_path + '/' + name + '.csv'
+    df.to_csv(save_path)
+
 
 #plots  the histogram/normal distribution for either 
 def make_transformed_graph_1_axis(dfx, name):
@@ -86,8 +91,10 @@ def make_transformed_combined(df, epoch):
 def transform(dfPPL, dfEnergy, epoch, param):
     dfTransPPL = transform_to_standard_norm(dfPPL)
     dfTransEnergy = transform_to_standard_norm(dfEnergy)
-    #dfPropTransPPL = prop_norm(dfTransPPL)
-    #dfPropTransEnergy = prop_norm(dfTransEnergy)
+    #dfPropTransPPL = prop_norm(dfTransPPL)                 #Calculates the probability on the n(0,1) for ppl
+    #dfPropTransEnergy = prop_norm(dfTransEnergy)           #Calculates the probability on the n(0,1) for energy
+    #save_df_to_csv(dfTransPPL, 'PPLTransformed')           #Saves the transformed ppl in results
+    #save_df_to_csv(dfTransEnergy, 'EnergyTransformed')     #Saves the transformed energy in results
 
     epochData = combine_data_epoch(dfTransPPL, dfTransEnergy, epoch)
 
