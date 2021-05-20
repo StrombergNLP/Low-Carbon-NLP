@@ -1,7 +1,9 @@
 from sklearn.cluster import DBSCAN
+import math
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+
 
 df = pd.read_csv('data/actualbase.csv')
 df = df.drop(['id', 'vocab_size', 'hidden_size','num_hidden_layers', 'num_attention_heads', 'intermediate_size', 'actual_hidden_size', 'hidden_act', 'hidden_dropout_prob',
@@ -9,11 +11,11 @@ df = df.drop(['id', 'vocab_size', 'hidden_size','num_hidden_layers', 'num_attent
 'use_cache', 'energy_loss'], axis=1)
 
 df = df[['perplexity', 'energy_consumption']]
-df['energy_consumption'] = df['energy_consumption'] * 142.3439911
-
+#df['energy_consumption'] = df['energy_consumption'] * 142.3439911
+df['perplexity'] = df.apply(lambda x: np.log(x))
 X = df.to_numpy()
 
-clustering = DBSCAN(eps=200, min_samples=2).fit(X)
+clustering = DBSCAN(eps=0.5, min_samples=5).fit(X)
 labels = clustering.labels_
 print(labels)
 core_samples_mask = np.zeros_like(labels, dtype=bool)
@@ -36,7 +38,7 @@ for k, col in zip(unique_labels, colors):
 
     xy = X[class_member_mask & core_samples_mask]
     plt.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=tuple(col),
-             markeredgecolor='k', markersize=7)
+             markeredgecolor='k', markersize=10)
 
     xy = X[class_member_mask & ~core_samples_mask]
     plt.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=tuple(col),
@@ -45,4 +47,9 @@ for k, col in zip(unique_labels, colors):
 plt.title('Estimated number of clusters: %d' % n_clusters_)
 plt.ylabel("Energy Consumption Scaled")
 plt.xlabel("Perplexity")
+
+df['clusters'] = labels
+#print(df)
+#df.to_csv('out.csv')
+
 plt.show()
