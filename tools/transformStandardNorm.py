@@ -7,6 +7,10 @@ import seaborn as sns
 
 import scipy.stats
 
+from sklearn import preprocessing
+from hyperopt import fmin, tpe, hp, STATUS_OK, Trials
+import hyperopt.pyll.stochastic
+
 
 def read_data(path):
     return pd.read_csv(path)
@@ -54,7 +58,8 @@ def make_transformed_graph_1_axis(dfx, name):
     std = 1
     epoch = 1
     data = dfx[str(epoch)]
-
+    
+    sns.set_theme()
     plt.hist(data, bins=10, density=True, color='b')
     xmin, xmax = plt.xlim()
     x = np.linspace(xmin, xmax, 100)
@@ -81,11 +86,31 @@ def combine_data_epoch(dfPPL, dfEnergy, epoch):
 
 #param 3 graph, follow a translation and scale so both axis have mean 0 and s.d. 1
 def make_transformed_combined(df, epoch):
-    #sns.scatterplot(data=df, x='PPL', y='Energy', hue='PPL', palette='dark')  #with nice colours but weird legends
-    sns.scatterplot(data=df, x='PPL', y='Energy')
+    sns.set_theme()
+    sns.scatterplot(data=df, x='PPL', y='Energy', hue='PPL', palette='deep', legend=False)  #with nice colours but weird legends
+    #sns.scatterplot(data=df, x='PPL', y='Energy')
     plt.xlabel('Perplexity, tranlated and scaled')
     plt.ylabel('Energy Consumption (kWh), tranlated and scaled')
+    plt.title('Scaled and normalised for Epoch ' + epoch)
     plt.show()
+
+
+#transform and normalise with sklearn
+def transform_sklearn(dfPPL, dfEnergy):
+    names = list(dfPPL)
+    #atempt 3:
+    dnppl = preprocessing.normalize(dfPPL, axis=0)
+
+    dsnppl = preprocessing.scale(dnppl, axis=0)
+    scaled_ppl_df = pd.DataFrame(dsnppl, columns=names)
+
+    dnenergy = preprocessing.normalize(dfEnergy, axis=0)
+    dsnenergy = preprocessing.scale(dnenergy, axis=0)
+    scaled_energy_df = pd.DataFrame(dsnenergy, columns=names)
+
+    return (scaled_ppl_df, scaled_energy_df)
+
+
 
 
 def transform(dfPPL, dfEnergy, epoch, param):
@@ -96,14 +121,20 @@ def transform(dfPPL, dfEnergy, epoch, param):
     #save_df_to_csv(dfTransPPL, 'PPLTransformed')           #Saves the transformed ppl in results
     #save_df_to_csv(dfTransEnergy, 'EnergyTransformed')     #Saves the transformed energy in results
 
-    epochData = combine_data_epoch(dfTransPPL, dfTransEnergy, epoch)
-
+    
     if param == 1:
         make_transformed_graph_1_axis(dfTransPPL, "PPL")
     if param == 2:
         make_transformed_graph_1_axis(dfTransEnergy, "Energy")
     if param == 3: 
+        epochData = combine_data_epoch(dfTransPPL, dfTransEnergy, epoch)
         make_transformed_combined(epochData, epoch)
+    if param == 4:
+        df_scaledPPL, df_scaledEnergy = transform_sklearn(dfPPL, dfEnergy)
+        epochData_scaled = combine_data_epoch(df_scaledPPL, df_scaledEnergy, epoch)
+        #save_df_to_csv(df_scaledPPL, 'SklearnScaledPPL')                               #<--- Saves the scaled&normalised data for ppl
+        #save_df_to_csv(df_scaledEnergy, 'SklearnScaledEnergy')                         #<--- Saves the scaled&normalised data for energy
+        make_transformed_combined(epochData_scaled, epoch)
 
 
 if __name__ == '__main__':
@@ -115,8 +146,9 @@ if __name__ == '__main__':
     # changeable parameter:
     #param = 1: histogram and normDist for perplexity
     #param = 2: histogram and normDist for energy
-    #param = 3: dual standard normal plot TODO
-    param = 3
+    #param = 3: dual standard normal plot 
+    #param = 4: sklearn norm and scale
+    param = 4
     epoch = '1'
     #<-----------------------------------------------------------------------------------
     transform(dfPPL, dfEnergy, epoch, param)
