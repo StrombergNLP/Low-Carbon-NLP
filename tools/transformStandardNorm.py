@@ -8,8 +8,6 @@ import seaborn as sns
 import scipy.stats
 
 from sklearn import preprocessing
-from hyperopt import fmin, tpe, hp, STATUS_OK, Trials
-import hyperopt.pyll.stochastic
 
 
 def read_data(path):
