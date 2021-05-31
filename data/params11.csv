@@ -1,3 +1,0 @@
-﻿id,vocab_size,hidden_size,num_hidden_layers,num_attention_heads,intermediate_size,hidden_act,hidden_dropout_prob,attention_probs_dropout_prog,max_position_embeddings,type_vocab_size,initializer_range,layer_norm_eps,gradient_checkpointing,position_embedding_type,use_cache,energy_consumption,perplexity,energy_loss,loss,date
-152,26451,21,2,11,524,silu,0.376878299,0.240249391,512,1,0.02,1.00E-12,FALSE,absolute,TRUE,0.439625,1137.708289,500.1650065,7.036771245,14:26.5
-153,22077,17,1,14,442,silu,0.115148608,0.130981683,512,1,0.02,1.00E-12,FALSE,absolute,TRUE,0.359407,791.3810922,284.4279042,6.673779637,14:00.6

@@ -48,9 +48,4 @@ def plot_corr_matrix(path):
     #plt.savefig(path + '.png')
     plt.clf()
 
-#plot_corr_matrix('10epochs')
-#plot_corr_matrix('15worst')
-#plot_corr_matrix('15best')
-#plot_corr_matrix('actualbase')
-#plot_corr_matrix('3epochs_outlier')
-plot_corr_matrix('base_without_outliers')
+plot_corr_matrix('cluster2')

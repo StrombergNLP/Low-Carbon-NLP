@@ -5,22 +5,24 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-df_energy = pd.read_csv('results/energy_all_epochs.csv')
+df_energy = pd.read_csv('results/SklearnScaledEnergy.csv')
 df_energy = df_energy.drop(['id', '1', '2', '3', '4', '5','6','7','8','9'], axis=1)
-print(df_energy)
-df_perplex = pd.read_csv('results/perplexity_all_epochs.csv')
+df_energy.columns = ['energy']
+df_perplex = pd.read_csv('results/SklearnScaledPPL.csv')
 df_perplex = df_perplex.drop(['id','1','2','3','4','5','6','7','8','9'], axis=1)
-print(df_perplex)
+df_perplex.columns = ['perplexity']
+#df = pd.read_csv('data/actualbase.csv')
 #df = df.drop(['id', 'vocab_size', 'hidden_size','num_hidden_layers', 'num_attention_heads', 'intermediate_size', 'actual_hidden_size', 'hidden_act', 'hidden_dropout_prob',
 #'attention_probs_dropout_prog', 'max_position_embeddings', 'type_vocab_size', 'initializer_range', 'layer_norm_eps', 'gradient_checkpointing', 'position_embedding_type',
 #'use_cache', 'energy_loss'], axis=1)
-df = df_perplex.merge(df_energy)
+df = pd.concat([df_perplex, df_energy], axis=1)
+#print(df)
 #df = df[['perplexity', 'energy_consumption']]
 #df['energy_consumption'] = df['energy_consumption'] * 142.3439911
-#df['perplexity'] = df.apply(lambda x: np.log(x))
+#df['perplexity'] = df.apply(lambda x: np.log2(x))
 X = df.to_numpy()
 
-clustering = DBSCAN(eps=0.5, min_samples=5).fit(X)
+clustering = DBSCAN(eps=0.4, min_samples=5).fit(X)
 labels = clustering.labels_
 print(labels)
 core_samples_mask = np.zeros_like(labels, dtype=bool)
@@ -47,14 +49,13 @@ for k, col in zip(unique_labels, colors):
 
     xy = X[class_member_mask & ~core_samples_mask]
     plt.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=tuple(col),
-             markeredgecolor='k', markersize=3)
+             markeredgecolor='k', markersize=10)
 
 plt.title('Estimated number of clusters: %d' % n_clusters_)
-plt.ylabel("Energy Consumption Scaled")
-plt.xlabel("Perplexity")
+plt.xlabel('Perplexity, tranlated and scaled')
+plt.ylabel('Energy Consumption (kWh), tranlated and scaled')
 
 df['clusters'] = labels
 #print(df)
-#df.to_csv('out.csv')
-
+df.to_csv('out.csv')
 plt.show()
